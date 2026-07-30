@@ -37,9 +37,12 @@ function Students() {
   <th>Mobile</th>
   <th>Vehicle</th>
   <th>Fees</th>
+  <th>Paid</th>
+  <th>Balance</th>
   <th>Status</th>
   <th>Actions</th>
   <th>Practice Classes</th>
+  
 </tr>
         </thead>
 
@@ -61,7 +64,9 @@ function Students() {
   <td>{student.name}</td>
   <td>{student.mobile}</td>
   <td>{student.vehicle}</td>
-  <td>₹{student.fees}</td>
+ <td>₹{student.fees}</td>
+<td>₹{student.paid}</td>
+<td>₹{student.balance}</td>
   <td>{student.classesCompleted}</td>
 
   <td>
@@ -116,6 +121,25 @@ function Students() {
   }}
 >
   ➕ Class
+</button>
+<button
+  onClick={() => {
+    const amount = Number(prompt("Enter Payment Amount"));
+
+    if (!amount || amount <= 0) return;
+
+    const paid = student.paid + amount;
+    const balance = student.fees - paid;
+
+    updateStudent(index, {
+      ...student,
+      paid,
+      balance,
+      status: balance <= 0 ? "Paid" : "Pending",
+    });
+  }}
+>
+  💰 Pay
 </button>
   </td>
 </tr>

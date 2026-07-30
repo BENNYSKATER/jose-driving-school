@@ -4,6 +4,7 @@ import { useContext } from "react";
 import { StudentContext } from "../context/StudentContext";
 import { VehicleContext } from "../context/VehicleContext";
 import { InstructorContext } from "../context/InstructorContext";
+import { ScheduleContext } from "../context/ScheduleContext";
 
 const cardStyle = {
   background: "#000000",
@@ -16,8 +17,19 @@ const cardStyle = {
 function Dashboard() {
   const { students } = useContext(StudentContext);
   const { vehicles } = useContext(VehicleContext);
-const { instructors } = useContext(InstructorContext);
-  console.log("Students:", students);
+  const { instructors } = useContext(InstructorContext);
+  const { schedules } = useContext(ScheduleContext);
+
+  const today = new Date().toISOString().split("T")[0];
+
+  const todayClasses = schedules.filter(
+    (schedule) => schedule.date === today
+  ).length;
+
+  console.log("Today's Date:", today);
+  console.log("Schedules:", schedules);
+  console.log("Today's Classes:", todayClasses);
+
   return (
     <div style={{ display: "flex" }}>
       <Sidebar />
@@ -36,17 +48,17 @@ const { instructors } = useContext(InstructorContext);
         >
           <div style={cardStyle}>
             <h2>👨‍🎓 Students</h2>
-           <p>{students.length}</p>
+            <p>{students.length}</p>
           </div>
 
           <div style={cardStyle}>
             <h2>🚗 Vehicles</h2>
-           <p>{vehicles.length}</p>
+            <p>{vehicles.length}</p>
           </div>
 
           <div style={cardStyle}>
             <h2>👨‍🏫 Instructors</h2>
-           <p>{instructors.length}</p>
+            <p>{instructors.length}</p>
           </div>
 
           <div style={cardStyle}>
@@ -56,7 +68,7 @@ const { instructors } = useContext(InstructorContext);
 
           <div style={cardStyle}>
             <h2>📅 Today's Classes</h2>
-            <p>0</p>
+           <p>{schedules.length}</p>
           </div>
 
           <div style={cardStyle}>

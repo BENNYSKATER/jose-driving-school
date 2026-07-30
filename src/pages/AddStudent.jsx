@@ -12,14 +12,14 @@ const navigate = useNavigate();
   const [status, setStatus] = useState("Pending");
 
   const handleSave = () => {
-    const student = {
+    addStudent({
   name,
   mobile,
   vehicle,
-  fees,
-  status: "Pending",
-  classesCompleted: 0,
-};
+  fees: Number(fees),
+  paid: 0,
+  balance: Number(fees),
+});
 
     addStudent(student);
 

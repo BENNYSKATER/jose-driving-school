@@ -1,12 +1,16 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { ScheduleContext } from "../context/ScheduleContext";
+
 function Schedule() {
-const {
-  schedules,
-  deleteSchedule,
-  updateSchedule,
-} = useContext(ScheduleContext);
+  const {
+    schedules,
+    deleteSchedule,
+    updateSchedule,
+  } = useContext(ScheduleContext);
+
+  console.log("Schedules:", schedules);
+
   return (
     <div style={{ padding: "30px" }}>
       <h1>📅 Schedule Management</h1>

@@ -8,7 +8,7 @@ function AddSchedule() {
   const { students } = useContext(StudentContext);
   const { vehicles } = useContext(VehicleContext);
   const { instructors } = useContext(InstructorContext);
-  const { addSchedule } = useContext(ScheduleContext);
+ const { schedules, addSchedule } = useContext(ScheduleContext);
 
   const [student, setStudent] = useState("");
   const [vehicle, setVehicle] = useState("");
@@ -17,16 +17,37 @@ function AddSchedule() {
   const [time, setTime] = useState("");
 
   const save = () => {
-    addSchedule({
-      student,
-      vehicle,
-      instructor,
-      date,
-      time,
-    });
+  const exists = schedules.find(
+    (item) =>
+      item.date === date &&
+      item.time === time &&
+      (
+        item.vehicle === vehicle ||
+        item.instructor === instructor
+      )
+  );
 
-    alert("Schedule Created Successfully");
-  };
+  if (exists) {
+    alert("❌ Instructor or Vehicle already booked!");
+    return;
+  }
+
+  addSchedule({
+    student,
+    vehicle,
+    instructor,
+    date,
+    time,
+  });
+
+  alert("✅ Schedule Created Successfully");
+
+  setStudent("");
+  setVehicle("");
+  setInstructor("");
+  setDate("");
+  setTime("");
+};
 
   return (
     <div style={{ padding: "30px" }}>
