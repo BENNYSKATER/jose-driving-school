@@ -3,7 +3,11 @@ import { Link } from "react-router-dom";
 import { VehicleContext } from "../context/VehicleContext";
 
 function Vehicles() {
-  const { vehicles, deleteVehicle } = useContext(VehicleContext);
+ const {
+  vehicles,
+  deleteVehicle,
+  updateVehicle,
+} = useContext(VehicleContext);
 
   return (
     <div style={{ padding: "30px" }}>
