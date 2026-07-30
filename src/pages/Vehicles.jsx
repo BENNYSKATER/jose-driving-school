@@ -59,6 +59,32 @@ function Vehicles() {
 
                 <td>
                   <button
+  style={{
+    marginRight: "8px",
+    background: "orange",
+    color: "white",
+    border: "none",
+    padding: "6px 12px",
+    borderRadius: "6px",
+    cursor: "pointer",
+  }}
+  onClick={() => {
+    const newNumber = prompt(
+      "Enter Vehicle Number",
+      vehicle.number
+    );
+
+    if (!newNumber) return;
+
+    updateVehicle(index, {
+      ...vehicle,
+      number: newNumber,
+    });
+  }}
+>
+  ✏️ Edit
+</button>
+                  <button
                     style={{
                       background: "red",
                       color: "white",
