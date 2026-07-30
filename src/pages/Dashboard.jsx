@@ -2,6 +2,8 @@ import Sidebar from "../components/Sidebar";
 import "../css/Sidebar.css";
 import { useContext } from "react";
 import { StudentContext } from "../context/StudentContext";
+import { VehicleContext } from "../context/VehicleContext";
+import { InstructorContext } from "../context/InstructorContext";
 
 const cardStyle = {
   background: "#000000",
@@ -13,6 +15,8 @@ const cardStyle = {
 
 function Dashboard() {
   const { students } = useContext(StudentContext);
+  const { vehicles } = useContext(VehicleContext);
+const { instructors } = useContext(InstructorContext);
   console.log("Students:", students);
   return (
     <div style={{ display: "flex" }}>
@@ -37,12 +41,12 @@ function Dashboard() {
 
           <div style={cardStyle}>
             <h2>🚗 Vehicles</h2>
-            <p>0</p>
+           <p>{vehicles.length}</p>
           </div>
 
           <div style={cardStyle}>
             <h2>👨‍🏫 Instructors</h2>
-            <p>0</p>
+           <p>{instructors.length}</p>
           </div>
 
           <div style={cardStyle}>

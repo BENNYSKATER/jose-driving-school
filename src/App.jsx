@@ -10,6 +10,9 @@ import Fees from "./pages/Fees";
 import StudentProfile from "./pages/StudentProfile";
 import Schedule from "./pages/Schedule";
 import Reports from "./pages/Reports";
+import Instructors from "./pages/Instructors";
+import AddInstructor from "./pages/AddInstructor";
+import AddSchedule from "./pages/AddSchedule";
 function Login() {
  
   const navigate = useNavigate();
@@ -48,6 +51,9 @@ function App() {
       <Route path="/fees" element={<Fees />} />
       <Route path="/schedule" element={<Schedule />} />
       <Route path="/reports" element={<Reports />} />
+      <Route path="/instructors" element={<Instructors />} />
+<Route path="/add-instructor" element={<AddInstructor />} />
+<Route path="/add-schedule" element={<AddSchedule />} />
       <Route
   path="/student/:id"
   element={<StudentProfile />}
