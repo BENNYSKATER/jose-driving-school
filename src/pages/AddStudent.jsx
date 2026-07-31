@@ -12,25 +12,24 @@ const navigate = useNavigate();
   const [status, setStatus] = useState("Pending");
 
   const handleSave = () => {
-    addStudent({
-  name,
-  mobile,
-  vehicle,
-  fees: Number(fees),
-  paid: 0,
-  balance: Number(fees),
-});
+  addStudent({
+    name,
+    mobile,
+    vehicle,
+    fees: Number(fees),
+    paid: 0,
+    balance: Number(fees),
+    status: "Pending",
+  });
 
-    addStudent(student);
+  alert("Student Added Successfully ✅");
+  navigate("/students");
 
-    alert("Student Added Successfully ✅");
-    navigate("/students");
-
-    setName("");
-    setMobile("");
-    setVehicle("");
-    setFees("");
-  };
+  setName("");
+  setMobile("");
+  setVehicle("");
+  setFees("");
+};
 
   return (
     <div style={{ padding: "30px" }}>

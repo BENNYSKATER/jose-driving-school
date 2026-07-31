@@ -2,6 +2,8 @@ import { useContext, useState } from "react";
 import { StudentContext } from "../context/StudentContext";
 import "../css/Students.css";
 import { Link } from "react-router-dom";
+import { generateReceipt } from "../utils/generateReceipt";
+console.log(generateReceipt);
 
 function Students() {
   const [search, setSearch] = useState("");
@@ -67,7 +69,7 @@ function Students() {
  <td>₹{student.fees}</td>
 <td>₹{student.paid}</td>
 <td>₹{student.balance}</td>
-  <td>{student.classesCompleted}</td>
+ <td>{student.classesCompleted || 0}</td>
 
   <td>
     <span
@@ -85,11 +87,40 @@ function Students() {
   </Link>
 </td>
   <td>
-    <button>✏️ Edit</button>
+<button
+  onClick={() => {
+    const newName = prompt("Enter Student Name", student.name);
 
-    <button style={{ marginLeft: "8px" }}>
-      🗑 Delete
-    </button>
+    if (!newName) return;
+
+    updateStudent(index, {
+      ...student,
+      name: newName,
+    });
+  }}
+  style={{ marginRight: "8px" }}
+>
+  ✏️ Edit
+</button>
+
+    <button
+  onClick={() => {
+    if (window.confirm("Delete this student?")) {
+      deleteStudent(index);
+    }
+  }}
+  style={{
+    marginLeft: "8px",
+    background: "red",
+    color: "white",
+    border: "none",
+    padding: "6px 12px",
+    borderRadius: "6px",
+    cursor: "pointer",
+  }}
+>
+  🗑 Delete
+</button>
 
     {student.status !== "Paid" && (
   <button
@@ -116,7 +147,7 @@ function Students() {
   onClick={() => {
     updateStudent(index, {
       ...student,
-      classesCompleted: student.classesCompleted + 1,
+      classesCompleted: (student.classesCompleted || 0) + 1,
     });
   }}
 >
@@ -128,15 +159,26 @@ function Students() {
 
     if (!amount || amount <= 0) return;
 
-    const paid = student.paid + amount;
+    const paid = (student.paid || 0) + amount;
     const balance = student.fees - paid;
 
-    updateStudent(index, {
-      ...student,
-      paid,
-      balance,
-      status: balance <= 0 ? "Paid" : "Pending",
-    });
+   const updatedStudent = {
+  ...student,
+  paid,
+  balance,
+  status: balance <= 0 ? "Paid" : "Pending",
+  paymentHistory: [
+    ...(student.paymentHistory || []),
+    {
+      amount,
+      date: new Date().toLocaleDateString(),
+    },
+  ],
+};
+
+updateStudent(index, updatedStudent);
+
+generateReceipt(updatedStudent, amount);
   }}
 >
   💰 Pay

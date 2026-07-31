@@ -16,6 +16,10 @@ const cardStyle = {
 
 function Dashboard() {
   const { students } = useContext(StudentContext);
+  const totalPendingFees = students.reduce(
+  (total, student) => total + (student.balance || 0),
+  0
+);
   const { vehicles } = useContext(VehicleContext);
   const { instructors } = useContext(InstructorContext);
   const { schedules } = useContext(ScheduleContext);
@@ -63,7 +67,7 @@ function Dashboard() {
 
           <div style={cardStyle}>
             <h2>💰 Pending Fees</h2>
-            <p>₹0</p>
+           <p>₹{totalPendingFees}</p>
           </div>
 
           <div style={cardStyle}>

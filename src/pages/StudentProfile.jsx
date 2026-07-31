@@ -7,28 +7,104 @@ function StudentProfile() {
 
   const { students } = useContext(StudentContext);
 
-  const student = students[id];
+const student = students[id];
 
-  if (!student) {
-    return <h2>Student Not Found</h2>;
-  }
+console.log(student);
+
+if (!student) {
+  return <h2>Student Not Found</h2>;
+}
 
   return (
-    <div style={{ padding: "30px" }}>
+    <div
+      style={{
+        padding: "30px",
+        maxWidth: "700px",
+        margin: "auto",
+      }}
+    >
       <h1>👨‍🎓 Student Profile</h1>
+
+      <hr />
 
       <h2>{student.name}</h2>
 
-      <p>📱 Mobile : {student.mobile}</p>
+      <p><b>📱 Mobile :</b> {student.mobile}</p>
 
-      <p>🚗 Vehicle : {student.vehicle}</p>
+      <p><b>🚗 Vehicle :</b> {student.vehicle}</p>
 
-      <p>💰 Fees : ₹{student.fees}</p>
+      <p><b>💰 Total Fees :</b> ₹{student.fees}</p>
+
+      <p><b>💵 Paid :</b> ₹{student.paid || 0}</p>
+
+      <p><b>💳 Balance :</b> ₹{student.balance || student.fees}</p>
 
       <p>
-        Status :
-        {student.status === "Paid" ? " ✅ Paid" : " ❌ Pending"}
+        <b>📌 Status :</b>{" "}
+        {student.status === "Paid" ? "✅ Paid" : "❌ Pending"}
       </p>
+
+      <p>
+        <b>🎯 Classes Completed :</b>{" "}
+        {student.classesCompleted || 0}
+      </p>
+
+      <hr />
+
+      <h2>📅 Schedule History</h2>
+      <p>No Schedule Assigned</p>
+
+      <hr />
+
+      <h2>💰 Payment History</h2>
+
+{student.paymentHistory &&
+student.paymentHistory.length > 0 ? (
+
+  <table
+    border="1"
+    cellPadding="10"
+    style={{
+      width: "100%",
+      marginTop: "10px",
+    }}
+  >
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Amount</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {student.paymentHistory.map((payment, index) => (
+        <tr key={index}>
+          <td>{payment.date}</td>
+          <td>₹{payment.amount}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+) : (
+  <p>No Payments Yet</p>
+)}
+
+      <hr />
+
+      <button
+        onClick={() => window.print()}
+        style={{
+          background: "#1976d2",
+          color: "white",
+          padding: "10px 20px",
+          border: "none",
+          borderRadius: "8px",
+          cursor: "pointer",
+        }}
+      >
+        🖨 Print Student Details
+      </button>
     </div>
   );
 }

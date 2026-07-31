@@ -7,8 +7,10 @@ import "./index.css";
 import { VehicleProvider } from "./context/VehicleContext";
 import { InstructorProvider } from "./context/InstructorContext";
 import { ScheduleProvider } from "./context/ScheduleContext";
+import { AttendanceProvider } from "./context/AttendanceContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
+  <AttendanceProvider>
   <StudentProvider>
   <VehicleProvider>
     <InstructorProvider>
@@ -20,4 +22,5 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     </InstructorProvider>
   </VehicleProvider>
 </StudentProvider>
+</AttendanceProvider>
 );
