@@ -1,13 +1,17 @@
 import { useParams } from "react-router-dom";
 import { useContext } from "react";
 import { StudentContext } from "../context/StudentContext";
+import { AttendanceContext } from "../context/AttendanceContext";
 
 function StudentProfile() {
   const { id } = useParams();
 
   const { students } = useContext(StudentContext);
-
+const { attendance } = useContext(AttendanceContext);
 const student = students[id];
+const studentAttendance = attendance.filter(
+  (record) => record.student === student.name
+);
 
 console.log(student);
 
@@ -51,8 +55,40 @@ if (!student) {
 
       <hr />
 
-      <h2>📅 Schedule History</h2>
-      <p>No Schedule Assigned</p>
+      <h2>📅 Attendance History</h2>
+
+{studentAttendance.length === 0 ? (
+  <p>No Attendance Records</p>
+) : (
+  <table
+    border="1"
+    cellPadding="10"
+    style={{
+      width: "100%",
+      marginTop: "10px",
+    }}
+  >
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {studentAttendance.map((record, index) => (
+        <tr key={index}>
+          <td>{record.date}</td>
+          <td>
+            {record.status === "Present"
+              ? "✅ Present"
+              : "❌ Absent"}
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+)}
 
       <hr />
 

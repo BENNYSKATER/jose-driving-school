@@ -10,17 +10,24 @@ const navigate = useNavigate();
   const [vehicle, setVehicle] = useState("");
   const [fees, setFees] = useState("");
   const [status, setStatus] = useState("Pending");
-
+const [photo, setPhoto] = useState("");
+const [aadhaar, setAadhaar] = useState("");
+const [learner, setLearner] = useState("");
+const [license, setLicense] = useState("");
   const handleSave = () => {
-  addStudent({
-    name,
-    mobile,
-    vehicle,
-    fees: Number(fees),
-    paid: 0,
-    balance: Number(fees),
-    status: "Pending",
-  });
+addStudent({
+  name,
+  mobile,
+  vehicle,
+  fees: Number(fees),
+  paid: 0,
+  balance: Number(fees),
+  status: "Pending",
+  photo,
+  aadhaar,
+  learner,
+  license,
+});
 
   alert("Student Added Successfully ✅");
   navigate("/students");
@@ -45,7 +52,26 @@ const navigate = useNavigate();
       />
 
       <br /><br />
+      <input
+  type="file"
+  accept="image/*"
+  onChange={(e) => {
+    const file = e.target.files[0];
 
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      setPhoto(reader.result);
+    };
+
+    reader.readAsDataURL(file);
+  }}
+/>
+
+<br /><br />
+     
       <input
         type="text"
         placeholder="Mobile Number"

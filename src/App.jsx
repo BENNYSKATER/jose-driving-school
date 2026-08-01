@@ -2,17 +2,20 @@ import { Routes, Route } from "react-router-dom";
 import "./App.css";
 import Students from "./pages/Students";
 import Dashboard from "./pages/Dashboard";
+import StudentDetails from "./pages/StudentDetails";
 import AddStudent from "./pages/AddStudent";
 import { useNavigate } from "react-router-dom";
 import Vehicles from "./pages/Vehicles";
 import AddVehicle from "./pages/AddVehicle";
 import Fees from "./pages/Fees";
-import StudentProfile from "./pages/StudentProfile";
 import Schedule from "./pages/Schedule";
 import Reports from "./pages/Reports";
 import Instructors from "./pages/Instructors";
 import AddInstructor from "./pages/AddInstructor";
 import AddSchedule from "./pages/AddSchedule";
+import Attendance from "./pages/Attendance";
+import AddAttendance from "./pages/AddAttendance";
+import EditStudent from "./pages/EditStudent";
 function Login() {
  
   const navigate = useNavigate();
@@ -52,12 +55,12 @@ function App() {
       <Route path="/schedule" element={<Schedule />} />
       <Route path="/reports" element={<Reports />} />
       <Route path="/instructors" element={<Instructors />} />
-<Route path="/add-instructor" element={<AddInstructor />} />
-<Route path="/add-schedule" element={<AddSchedule />} />
-      <Route
-  path="/student/:id"
-  element={<StudentProfile />}
-/>
+      <Route path="/add-instructor" element={<AddInstructor />} />
+      <Route path="/add-schedule" element={<AddSchedule />} />
+      <Route path="/attendance" element={<Attendance />} />
+      <Route path="/add-attendance" element={<AddAttendance />} />
+      <Route path="/student/:id"element={<StudentDetails />}/>
+      <Route path="/edit-student/:id" element={<EditStudent />} />
     </Routes>
   );
 }
