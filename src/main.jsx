@@ -8,19 +8,25 @@ import { VehicleProvider } from "./context/VehicleContext";
 import { InstructorProvider } from "./context/InstructorContext";
 import { ScheduleProvider } from "./context/ScheduleContext";
 import { AttendanceProvider } from "./context/AttendanceContext";
+import { AuthProvider } from "./context/AuthContext";
+import { SettingsProvider } from "./context/SettingsContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <AttendanceProvider>
-  <StudentProvider>
-  <VehicleProvider>
-    <InstructorProvider>
-      <ScheduleProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </ScheduleProvider>
-    </InstructorProvider>
-  </VehicleProvider>
-</StudentProvider>
-</AttendanceProvider>
+  <BrowserRouter>
+    <AuthProvider>
+      <StudentProvider>
+        <VehicleProvider>
+          <InstructorProvider>
+            <ScheduleProvider>
+              <AttendanceProvider>
+                <SettingsProvider>
+                  <App />
+                </SettingsProvider>
+              </AttendanceProvider>
+            </ScheduleProvider>
+          </InstructorProvider>
+        </VehicleProvider>
+      </StudentProvider>
+    </AuthProvider>
+  </BrowserRouter>
 );

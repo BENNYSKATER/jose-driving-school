@@ -28,55 +28,69 @@ import { InstructorContext } from "../context/InstructorContext";
 import { ScheduleContext } from "../context/ScheduleContext";
 import { AttendanceContext } from "../context/AttendanceContext";
 import "../css/Dashboard.css";
+import { SettingsContext } from "../context/SettingsContext"; 
 
 
 const DashboardCard = ({ title, value, icon, color }) => (
   <motion.div
-    whileHover={{ scale: 1.04 }}
-    transition={{ duration: 0.2 }}
+    whileHover={{
+      scale: 1.05,
+      y: -8,
+    }}
+    transition={{ duration: 0.25 }}
     style={{
-      background: "#fff",
+      background: "#ffffff",
       borderRadius: "18px",
-      padding: "20px",
-      boxShadow: "0 10px 30px rgba(0,0,0,.08)",
+      padding: "22px",
+      boxShadow: "0 12px 25px rgba(0,0,0,0.12)",
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center",
-      borderLeft: `6px solid ${color}`,
+      cursor: "pointer",
     }}
   >
     <div>
-      <p
-        style={{
-          margin: 0,
-          color: "#777",
-          fontSize: "14px",
-        }}
-      >
-        {title}
-      </p>
+<p
+  style={{
+    margin: 0,
+    color: "#374151",
+    fontSize: "18px",
+    fontWeight: "700",
+    letterSpacing: "0.5px",
+  }}
+>
+  {title}
+</p>
 
-      <h2
-        style={{
-          marginTop: "10px",
-          color: "#111827",
-        }}
-      >
-        {value}
-      </h2>
+<h2
+  style={{
+    marginTop: "12px",
+    color: "#111827",
+    fontWeight: "800",
+    fontSize: "40px",
+  }}
+>
+  {value}
+</h2>
     </div>
 
     <div
       style={{
-        fontSize: "42px",
-        color: color,
+        width: "65px",
+        height: "65px",
+        borderRadius: "50%",
+        background: color,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        color: "#fff",
+        fontSize: "28px",
       }}
     >
       {icon}
     </div>
   </motion.div>
 );
-
 function Dashboard() {
   const { students } = useContext(StudentContext);
 
@@ -117,6 +131,7 @@ const todayClasses = schedules.filter(
 ];
 
 const COLORS = ["#22c55e", "#ef4444"];
+const { settings } = useContext(SettingsContext);
 
   return (
   <div style={{ display: "flex" }}>
@@ -132,8 +147,25 @@ const COLORS = ["#22c55e", "#ef4444"];
     >
      <div className="topbar">
   <div>
-    <h2>🚗 Jose Driving School</h2>
+    <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
+  {settings.logo && (
+    <img
+      src={settings.logo}
+      alt="logo"
+      style={{
+        width: "55px",
+        height: "55px",
+        borderRadius: "50%",
+        objectFit: "cover",
+      }}
+    />
+  )}
+
+  <div>
+    <h2>{settings.schoolName}</h2>
     <p>Driving School Management System</p>
+  </div>
+</div>
   </div>
 
  <div className="topbar-right">
@@ -222,13 +254,19 @@ const COLORS = ["#22c55e", "#ef4444"];
       <div
   style={{
     marginTop: "30px",
-    background: "#fff",
-    borderRadius: "18px",
+    background: "linear-gradient(135deg,#2563eb,#1d4ed8)",    borderRadius: "18px",
     padding: "20px",
-    boxShadow: "0 10px 30px rgba(0,0,0,.08)",
+    boxShadow: "0 12px 25px rgba(0,0,0,0.12)",
   }}
 >
-  <h2>📊 Attendance Overview</h2>
+ <h2
+  style={{
+    color: "#ffffff",
+    marginBottom: "20px",
+  }}
+>
+  📊 Attendance Overview
+</h2>
 
   <div style={{ width: "100%", height: 300 }}>
     <ResponsiveContainer>

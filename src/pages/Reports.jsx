@@ -6,15 +6,6 @@ import { ScheduleContext } from "../context/ScheduleContext";
 import { AttendanceContext } from "../context/AttendanceContext";
 import { exportStudents } from "../utils/exportExcel";
 
-const cardStyle = {
-  background: "#111",
-  color: "white",
-  padding: "20px",
-  borderRadius: "12px",
-  textAlign: "center",
-  boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
-};
-
 function Reports() {
   const { students } = useContext(StudentContext);
   const { vehicles } = useContext(VehicleContext);
@@ -51,85 +42,127 @@ function Reports() {
     (a) => a.status === "Absent"
   ).length;
 
+  const cards = [
+    { title: "👨‍🎓 Students", value: students.length, color: "#2563eb" },
+    { title: "🚗 Vehicles", value: vehicles.length, color: "#22c55e" },
+    { title: "👨‍🏫 Instructors", value: instructors.length, color: "#f59e0b" },
+    { title: "📅 Schedules", value: schedules.length, color: "#06b6d4" },
+    { title: "💰 Total Fees", value: `₹${totalFees}`, color: "#8b5cf6" },
+    { title: "💵 Collected", value: `₹${collectedFees}`, color: "#16a34a" },
+    { title: "💸 Pending", value: `₹${pendingFees}`, color: "#ef4444" },
+    { title: "✅ Present", value: present, color: "#22c55e" },
+    { title: "❌ Absent", value: absent, color: "#dc2626" },
+    { title: "💳 Paid Students", value: paidStudents, color: "#0891b2" },
+    { title: "⌛ Pending Students", value: pendingStudents, color: "#ea580c" },
+  ];
+
   return (
-    <div style={{ padding: "30px" }}>
-      <h1>📊 Reports Dashboard</h1><button
-  onClick={() => exportStudents(students)}
-  style={{
-    background: "green",
-    color: "white",
-    padding: "10px 20px",
-    border: "none",
-    borderRadius: "8px",
-    cursor: "pointer",
-    marginBottom: "20px",
-  }}
->
-  📥 Export Students to Excel
-</button>
+    <div
+      style={{
+        padding: "30px",
+        background: "#f4f7fb",
+        minHeight: "100vh",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "30px",
+        }}
+      >
+        <div>
+          <h1
+            style={{
+              margin: 0,
+              color: "#1e3a8a",
+            }}
+          >
+            📊 Reports Dashboard
+          </h1>
+
+          <p
+            style={{
+              color: "#64748b",
+              marginTop: "5px",
+            }}
+          >
+            Overall Driving School Analytics
+          </p>
+        </div>
+
+        <button
+          onClick={() => exportStudents(students)}
+          style={{
+            background: "#16a34a",
+            color: "#fff",
+            border: "none",
+            padding: "12px 22px",
+            borderRadius: "10px",
+            cursor: "pointer",
+            fontWeight: "bold",
+            fontSize: "15px",
+          }}
+        >
+          📥 Export Excel
+        </button>
+      </div>
 
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(3,1fr)",
+          gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))",
           gap: "20px",
-          marginTop: "25px",
         }}
       >
-        <div style={cardStyle}>
-          <h2>👨‍🎓 Students</h2>
-          <h1>{students.length}</h1>
-        </div>
+        {cards.map((card, index) => (
+          <div
+            key={index}
+            style={{
+              background: "#fff",
+              borderRadius: "18px",
+              padding: "25px",
+              boxShadow: "0 10px 25px rgba(0,0,0,.08)",
+              borderLeft: `6px solid ${card.color}`,
+              cursor: "pointer",
+              transition: ".3s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform =
+                "translateY(-8px)";
+              e.currentTarget.style.boxShadow =
+                "0 18px 35px rgba(37,99,235,.20)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform =
+                "translateY(0)";
+              e.currentTarget.style.boxShadow =
+                "0 10px 25px rgba(0,0,0,.08)";
+            }}
+          >
+            <h3
+              style={{
+                margin: 0,
+                color: "#374151",
+                fontWeight: "700",
+              }}
+            >
+              {card.title}
+            </h3>
 
-        <div style={cardStyle}>
-          <h2>🚗 Vehicles</h2>
-          <h1>{vehicles.length}</h1>
-        </div>
-
-        <div style={cardStyle}>
-          <h2>👨‍🏫 Instructors</h2>
-          <h1>{instructors.length}</h1>
-        </div>
-
-        <div style={cardStyle}>
-          <h2>📅 Schedules</h2>
-          <h1>{schedules.length}</h1>
-        </div>
-
-        <div style={cardStyle}>
-          <h2>💰 Total Fees</h2>
-          <h1>₹{totalFees}</h1>
-        </div>
-
-        <div style={cardStyle}>
-          <h2>💵 Collected</h2>
-          <h1>₹{collectedFees}</h1>
-        </div>
-
-        <div style={cardStyle}>
-          <h2>💸 Pending</h2>
-          <h1>₹{pendingFees}</h1>
-        </div>
-
-        <div style={cardStyle}>
-          <h2>✅ Present</h2>
-          <h1>{present}</h1>
-        </div>
-
-        <div style={cardStyle}>
-          <h2>❌ Absent</h2>
-          <h1>{absent}</h1>
-        </div>
-
-        <div style={cardStyle}>
-          <h2>💳 Paid Students</h2>
-          <h1>{paidStudents}</h1>
-        </div>
-
-        <div style={cardStyle}>
-          <h2>⌛ Pending Students</h2>
-          <h1>{pendingStudents}</h1>
-        </div>
+            <h1
+              style={{
+                marginTop: "18px",
+                color: card.color,
+                fontSize: "42px",
+                fontWeight: "800",
+              }}
+            >
+              {card.value}
+            </h1>
+          </div>
+        ))}
       </div>
     </div>
   );

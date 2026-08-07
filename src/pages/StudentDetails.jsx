@@ -28,7 +28,7 @@ function StudentDetails() {
       style={{
         maxWidth: "900px",
         margin: "auto",
-        background: "#fff",
+        
         borderRadius: "18px",
         padding: "30px",
         boxShadow: "0 10px 30px rgba(0,0,0,.08)",

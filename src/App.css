@@ -120,3 +120,15 @@ select{
 h1,h2,h3{
   color:#1e293b;
 }
+h1 {
+  color: #1e293b !important;
+}
+
+h2 {
+  color: #1e293b !important;
+}
+
+a {
+  color: #1e293b !important;
+  text-decoration: none;
+}

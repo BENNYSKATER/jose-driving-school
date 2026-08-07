@@ -191,7 +191,7 @@ className="students-table"
   >
     ✏️ Edit
   </button>
-</Link> How many college is okay? I'm pending
+</Link>
 
     <br />
 

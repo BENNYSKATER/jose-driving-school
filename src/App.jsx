@@ -16,8 +16,15 @@ import AddSchedule from "./pages/AddSchedule";
 import Attendance from "./pages/Attendance";
 import AddAttendance from "./pages/AddAttendance";
 import EditStudent from "./pages/EditStudent";
+import Register from "./pages/Register";
+import { useContext, useState } from "react";
+import { AuthContext } from "./context/AuthContext";
+import Settings from "./pages/Settings";
 function Login() {
- 
+ const { login } = useContext(AuthContext);
+
+const [username, setUsername] = useState("");
+const [password, setPassword] = useState("");
   const navigate = useNavigate();
   return (
     <div className="login-container">
@@ -27,16 +34,52 @@ function Login() {
         <h1>Jose Driving School</h1>
         <p>Management System</p>
 
-        <input type="text" placeholder="Username" />
-        <input type="password" placeholder="Password" />
+        <input
+  type="text"
+  placeholder="Username"
+  value={username}
+  onChange={(e) => setUsername(e.target.value)}
+/>
+        <input
+  type="password"
+  placeholder="Password"
+  value={password}
+  onChange={(e) => setPassword(e.target.value)}
+/>
 
-        <button
+   <button
   onClick={() => {
-    navigate("/dashboard");
+    const success = login(username, password);
+
+    if (success) {
+      navigate("/dashboard");
+    } else {
+      alert("Invalid Username or Password");
+    }
   }}
 >
   Login
 </button>
+<p
+  style={{
+    marginTop: "20px",
+    textAlign: "center",
+  }}
+>
+  First Time?
+
+  <span
+    onClick={() => navigate("/register")}
+    style={{
+      color: "#2563eb",
+      fontWeight: "bold",
+      cursor: "pointer",
+      marginLeft: "5px",
+    }}
+  >
+    Create Admin
+  </span>
+</p>
       </div>
     </div>
   );
@@ -46,6 +89,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
+      <Route path="/register" element={<Register />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/students" element={<Students />} />
       <Route path="/add-student" element={<AddStudent />} />
@@ -61,6 +105,7 @@ function App() {
       <Route path="/add-attendance" element={<AddAttendance />} />
       <Route path="/student/:id"element={<StudentDetails />}/>
       <Route path="/edit-student/:id" element={<EditStudent />} />
+      <Route path="/settings" element={<Settings />} />
     </Routes>
   );
 }
