@@ -1,104 +1,489 @@
-import { useContext } from "react";
-import { Link } from "react-router-dom";
+import { useContext, useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  FaUserTie,
+  FaPlus,
+  FaSearch,
+  FaPhone,
+  FaCar,
+  FaIdCard,
+  FaStar,
+  FaEdit,
+  FaTrash,
+  FaEye,
+  FaUsers,
+  FaCheckCircle,
+  FaUserClock,
+  FaTimes,
+} from "react-icons/fa";
+
 import { InstructorContext } from "../context/InstructorContext";
+
+import "../css/Instructors.css";
 
 function Instructors() {
   const {
     instructors,
     deleteInstructor,
-    updateInstructor,
   } = useContext(InstructorContext);
 
+  const navigate = useNavigate();
+
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("All");
+
+  const filteredInstructors = useMemo(() => {
+    return instructors.filter((instructor) => {
+      const searchText = search
+        .toLowerCase()
+        .trim();
+
+      const matchesSearch =
+        instructor.name
+          ?.toLowerCase()
+          .includes(searchText) ||
+        String(instructor.mobile || "")
+          .includes(searchText) ||
+        instructor.licenseType
+          ?.toLowerCase()
+          .includes(searchText);
+
+      const status =
+        instructor.status || "Active";
+
+      const matchesFilter =
+        filter === "All" ||
+        status === filter;
+
+      return matchesSearch && matchesFilter;
+    });
+  }, [instructors, search, filter]);
+
+  const activeCount = instructors.filter(
+    (item) =>
+      (item.status || "Active") === "Active"
+  ).length;
+
+  const inactiveCount = instructors.filter(
+    (item) =>
+      (item.status || "Active") === "Inactive"
+  ).length;
+
+  const assignedVehicles = instructors.filter(
+    (item) => item.vehicle
+  ).length;
+
+  const handleDelete = (instructor) => {
+    const confirmDelete = window.confirm(
+      `Delete ${instructor.name}?`
+    );
+
+    if (!confirmDelete) return;
+
+    deleteInstructor(instructor.id);
+  };
+
   return (
-    <div style={{ padding: "30px" }}>
-      <h1>👨‍🏫 Instructors</h1>
+    <div className="instructors-page">
 
-      <Link to="/add-instructor">
-        <button
-          style={{
-            background: "green",
-            color: "white",
-            padding: "10px 20px",
-            border: "none",
-            borderRadius: "8px",
-            cursor: "pointer",
-            marginBottom: "20px",
-          }}
+      {/* ================= HEADER ================= */}
+
+      <div className="instructors-header">
+
+        <div className="instructors-heading">
+
+          <div className="instructors-heading-icon">
+            <FaUserTie />
+          </div>
+
+          <div>
+            <h1>Instructor Management</h1>
+
+            <p>
+              Manage your driving school instructors
+            </p>
+          </div>
+
+        </div>
+
+        <Link
+          to="/add-instructor"
+          className="add-instructor-btn"
         >
-          ➕ Add Instructor
-        </button>
-      </Link>
+          <FaPlus />
+          Add Instructor
+        </Link>
 
-      <table
-        border="1"
-        cellPadding="10"
-        style={{
-          width: "100%",
-          marginTop: "20px",
-        }}
-      >
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Mobile</th>
-            <th>Experience</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
+      </div>
 
-        <tbody>
-          {instructors.length === 0 ? (
-            <tr>
-              <td colSpan="5">
-                No Instructors Found
-              </td>
-            </tr>
-          ) : (
-            instructors.map((inst, index) => (
-              <tr key={index}>
-                <td>{inst.name}</td>
-                <td>{inst.mobile}</td>
-                <td>{inst.experience}</td>
-                <td>{inst.status}</td>
+      {/* ================= STATS ================= */}
 
-                <td>
-                  <button
-                    onClick={() => {
-                      const newName = prompt(
-                        "Enter Name",
-                        inst.name
-                      );
+      <div className="instructor-stats">
 
-                      if (!newName) return;
+        <div className="instructor-stat-card">
 
-                      updateInstructor(index, {
-                        ...inst,
-                        name: newName,
-                      });
-                    }}
-                  >
-                    ✏️ Edit
-                  </button>
+          <div className="stat-icon blue">
+            <FaUserTie />
+          </div>
 
-                  <button
-                    style={{
-                      marginLeft: "10px",
-                      background: "red",
-                      color: "white",
-                    }}
-                    onClick={() =>
-                      deleteInstructor(index)
-                    }
-                  >
-                    🗑️ Delete
-                  </button>
-                </td>
-              </tr>
-            ))
+          <div>
+            <span>Total Instructors</span>
+            <strong>{instructors.length}</strong>
+          </div>
+
+        </div>
+
+        <div className="instructor-stat-card">
+
+          <div className="stat-icon green">
+            <FaCheckCircle />
+          </div>
+
+          <div>
+            <span>Active</span>
+            <strong>{activeCount}</strong>
+          </div>
+
+        </div>
+
+        <div className="instructor-stat-card">
+
+          <div className="stat-icon orange">
+            <FaUserClock />
+          </div>
+
+          <div>
+            <span>Inactive</span>
+            <strong>{inactiveCount}</strong>
+          </div>
+
+        </div>
+
+        <div className="instructor-stat-card">
+
+          <div className="stat-icon purple">
+            <FaCar />
+          </div>
+
+          <div>
+            <span>Vehicles Assigned</span>
+            <strong>{assignedVehicles}</strong>
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* ================= TOOLBAR ================= */}
+
+      <div className="instructor-toolbar">
+
+        <div className="instructor-search">
+
+          <FaSearch />
+
+          <input
+            type="text"
+            placeholder="Search instructor..."
+            value={search}
+            onChange={(e) =>
+              setSearch(e.target.value)
+            }
+          />
+
+          {search && (
+            <button
+              className="clear-instructor-search"
+              onClick={() => setSearch("")}
+            >
+              <FaTimes />
+            </button>
           )}
-        </tbody>
-      </table>
+
+        </div>
+
+        <div className="instructor-filters">
+
+          {["All", "Active", "Inactive"].map(
+            (item) => (
+              <button
+                key={item}
+                className={
+                  filter === item
+                    ? "filter-btn active"
+                    : "filter-btn"
+                }
+                onClick={() =>
+                  setFilter(item)
+                }
+              >
+                {item}
+              </button>
+            )
+          )}
+
+        </div>
+
+      </div>
+
+      {/* ================= RESULT ================= */}
+
+      <div className="instructor-result">
+
+        Showing{" "}
+        <strong>
+          {filteredInstructors.length}
+        </strong>{" "}
+        of{" "}
+        <strong>
+          {instructors.length}
+        </strong>{" "}
+        instructors
+
+      </div>
+
+      {/* ================= GRID ================= */}
+
+      {filteredInstructors.length === 0 ? (
+
+        <div className="instructor-empty">
+
+          <div className="empty-instructor-icon">
+            <FaUserTie />
+          </div>
+
+          <h2>
+            {search
+              ? "No instructors found"
+              : "No instructors yet"}
+          </h2>
+
+          <p>
+            {search
+              ? "Try another search."
+              : "Add your first instructor to get started."}
+          </p>
+
+          {!search && (
+            <Link
+              to="/add-instructor"
+              className="empty-add-btn"
+            >
+              <FaPlus />
+              Add Instructor
+            </Link>
+          )}
+
+        </div>
+
+      ) : (
+
+        <div className="instructors-grid">
+
+          {filteredInstructors.map(
+            (instructor) => {
+
+              const status =
+                instructor.status || "Active";
+
+              const students =
+                Number(
+                  instructor.studentsCount || 0
+                );
+
+              const classes =
+                Number(
+                  instructor.classesCount || 0
+                );
+
+              const rating =
+                Number(
+                  instructor.rating || 5
+                );
+
+              return (
+                <div
+                  className="instructor-card"
+                  key={instructor.id}
+                >
+
+                  {/* TOP */}
+
+                  <div className="instructor-card-top">
+
+                    <div className="instructor-profile">
+
+                      <div className="instructor-avatar">
+
+                        {instructor.photo ? (
+                          <img
+                            src={instructor.photo}
+                            alt={instructor.name}
+                          />
+                        ) : (
+                          <FaUserTie />
+                        )}
+
+                      </div>
+
+                      <div>
+
+                        <h2>
+                          {instructor.name}
+                        </h2>
+
+                        <p>
+                          {instructor.experience
+                            ? `${instructor.experience} Experience`
+                            : "Driving Instructor"}
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                    <span
+                      className={
+                        status === "Active"
+                          ? "instructor-status active"
+                          : "instructor-status inactive"
+                      }
+                    >
+                      <span />
+                      {status}
+                    </span>
+
+                  </div>
+
+                  {/* DETAILS */}
+
+                  <div className="instructor-details">
+
+                    <div>
+                      <FaPhone />
+                      <span>
+                        {instructor.mobile || "-"}
+                      </span>
+                    </div>
+
+                    <div>
+                      <FaCar />
+                      <span>
+                        {instructor.vehicle ||
+                          "No vehicle"}
+                      </span>
+                    </div>
+
+                    <div>
+                      <FaIdCard />
+                      <span>
+                        {instructor.licenseType ||
+                          "-"}
+                      </span>
+                    </div>
+
+                    <div>
+                      <FaStar />
+                      <span>
+                        {rating.toFixed(1)} Rating
+                      </span>
+                    </div>
+
+                  </div>
+
+                  {/* STATS */}
+
+                  <div className="instructor-mini-stats">
+
+                    <div>
+                      <FaUsers />
+
+                      <strong>
+                        {students}
+                      </strong>
+
+                      <span>
+                        Students
+                      </span>
+                    </div>
+
+                    <div>
+                      <FaCar />
+
+                      <strong>
+                        {classes}
+                      </strong>
+
+                      <span>
+                        Classes
+                      </span>
+                    </div>
+
+                    <div>
+                      <FaStar />
+
+                      <strong>
+                        {rating.toFixed(1)}
+                      </strong>
+
+                      <span>
+                        Rating
+                      </span>
+                    </div>
+
+                  </div>
+
+                  {/* ACTIONS */}
+
+                  <div className="instructor-actions">
+
+                    <button
+                      className="instructor-action view"
+                      onClick={() =>
+                        navigate(
+                          `/instructor/${instructor.id}`
+                        )
+                      }
+                      title="View"
+                    >
+                      <FaEye />
+                    </button>
+
+                    <button
+                      className="instructor-action edit"
+                      onClick={() =>
+                        navigate(
+                          `/edit-instructor/${instructor.id}`
+                        )
+                      }
+                      title="Edit"
+                    >
+                      <FaEdit />
+                    </button>
+
+                    <button
+                      className="instructor-action delete"
+                      onClick={() =>
+                        handleDelete(
+                          instructor
+                        )
+                      }
+                      title="Delete"
+                    >
+                      <FaTrash />
+                    </button>
+
+                  </div>
+
+                </div>
+              );
+            }
+          )}
+
+        </div>
+
+      )}
+
     </div>
   );
 }

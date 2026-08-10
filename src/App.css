@@ -1,134 +1,349 @@
+/* =====================================================
+   JOSE DRIVING SCHOOL
+   APP CSS
+===================================================== */
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-body {
-  background: #0f172a;
-  font-family: Arial, sans-serif;
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
 }
 
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+/* =====================================================
+   LOGIN PAGE
+===================================================== */
+
+.login-page {
+  width: 100%;
+  min-height: 100vh;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  padding: 30px;
+
+  background:
+    radial-gradient(
+      circle at 15% 20%,
+      rgba(37, 99, 235, 0.18),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 85% 80%,
+      rgba(14, 165, 233, 0.16),
+      transparent 35%
+    ),
+    linear-gradient(
+      135deg,
+      #eef4ff 0%,
+      #f8fafc 50%,
+      #edf6ff 100%
+    );
 }
 
-.login-box {
-  background: white;
-  width: 380px;
-  padding: 40px;
-  border-radius: 15px;
+
+/* =====================================================
+   LOGIN CARD
+===================================================== */
+
+.login-card {
+  width: 100%;
+  max-width: 430px;
+
+  margin: auto;
+
+  padding: 42px 40px;
+
+  background: rgba(255, 255, 255, 0.97);
+
+  border-radius: 24px;
+
   text-align: center;
+
+  border: 1px solid rgba(255, 255, 255, 0.8);
+
+  box-shadow:
+    0 25px 60px rgba(15, 23, 42, 0.14),
+    0 8px 25px rgba(37, 99, 235, 0.08);
+
+  backdrop-filter: blur(12px);
+
+  position: relative;
+
+  z-index: 10;
+
+  animation: loginCard 0.5s ease;
 }
 
-.login-box h1 {
-  font-size: 36px;
-  color: #222;
-  margin: 10px 0;
+
+/* =====================================================
+   LOGIN ANIMATION
+===================================================== */
+
+@keyframes loginCard {
+
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
 }
 
-.login-box p {
-  color: gray;
-  margin-bottom: 25px;
+
+/* =====================================================
+   LOGIN LOGO
+===================================================== */
+
+.login-logo {
+  width: 82px;
+  height: 82px;
+
+  margin: 0 auto 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 22px;
+
+  font-size: 42px;
+
+  background: linear-gradient(
+    135deg,
+    #2563eb,
+    #1d4ed8
+  );
+
+  box-shadow:
+    0 12px 25px rgba(37, 99, 235, 0.28);
+
+  transform: rotate(-2deg);
 }
 
-.login-box input {
+
+/* =====================================================
+   LOGIN TITLE
+===================================================== */
+
+.login-card h1 {
+  margin: 0;
+
+  color: #0f172a;
+
+  font-size: 30px;
+
+  font-weight: 800;
+
+  letter-spacing: -0.5px;
+}
+
+
+/* =====================================================
+   LOGIN SUBTITLE
+===================================================== */
+
+.login-card > p {
+  margin-top: 8px;
+  margin-bottom: 30px;
+
+  color: #64748b;
+
+  font-size: 15px;
+
+  font-weight: 500;
+}
+
+
+/* =====================================================
+   LOGIN INPUTS
+===================================================== */
+
+.login-card input {
+  display: block;
+
   width: 100%;
-  padding: 12px;
-  margin: 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 16px;
+
+  height: 50px;
+
+  padding: 0 16px;
+
+  margin: 9px 0;
+
+  background: #f8fafc;
+
+  color: #0f172a;
+
+  border: 1px solid #e2e8f0;
+
+  border-radius: 12px;
+
+  outline: none;
+
+  font-size: 15px;
+
+  transition: 0.25s ease;
 }
 
-.login-box button {
+
+.login-card input::placeholder {
+  color: #94a3b8;
+}
+
+
+.login-card input:focus {
+  background: #ffffff;
+
+  border-color: #2563eb;
+
+  box-shadow:
+    0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+
+/* =====================================================
+   LOGIN BUTTON
+===================================================== */
+
+.login-card .login-btn {
+  display: block;
+
   width: 100%;
-  padding: 12px;
-  background: #007bff;
-  color: white;
+
+  height: 50px;
+
+  margin-top: 12px;
+
   border: none;
-  border-radius: 8px;
-  font-size: 18px;
+
+  border-radius: 12px;
+
+  background: linear-gradient(
+    135deg,
+    #2563eb,
+    #1d4ed8
+  );
+
+  color: #ffffff;
+
+  font-size: 16px;
+
+  font-weight: 700;
+
   cursor: pointer;
+
+  box-shadow:
+    0 10px 20px rgba(37, 99, 235, 0.22);
+
+  transition: 0.25s ease;
 }
 
-.login-box button:hover {
-  background: #0056b3;
-}
-.container h1 {
-  color: #000 !important;
-  font-size: 42px !important;
-  font-weight: bold !important;
-  line-height: 1.2;
-  margin: 10px 0;
-  font-family: Arial, sans-serif;
+
+.login-card .login-btn:hover {
+  background: linear-gradient(
+    135deg,
+    #1d4ed8,
+    #1e40af
+  );
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 14px 28px rgba(37, 99, 235, 0.28);
 }
 
-/* ===== Global Theme ===== */
 
-body{
-  background:#f4f7fb;
-  font-family:Arial, Helvetica, sans-serif;
+.login-card .login-btn:active {
+  transform: translateY(0);
 }
 
-table{
-  width:100%;
-  border-collapse:collapse;
-  background:#fff;
-  border-radius:12px;
-  overflow:hidden;
-  box-shadow:0 4px 12px rgba(0,0,0,.08);
+
+/* =====================================================
+   REGISTER
+===================================================== */
+
+.login-card .register-text {
+  margin-top: 22px !important;
+
+  margin-bottom: 0 !important;
+
+  color: #64748b !important;
+
+  font-size: 13px !important;
 }
 
-th{
-  background:#2563eb;
-  color:white;
-  padding:14px;
+
+.login-card .register-text span {
+  display: inline-block;
+
+  color: #2563eb;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  margin-left: 5px;
 }
 
-td{
-  padding:14px;
-  border-bottom:1px solid #eee;
+
+.login-card .register-text span:hover {
+  color: #1d4ed8;
 }
 
-tr:hover{
-  background:#f1f5f9;
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 600px) {
+
+  .login-page {
+    padding: 20px;
+  }
+
+  .login-card {
+    width: 100%;
+    max-width: 430px;
+
+    padding: 34px 24px;
+
+    border-radius: 20px;
+  }
+
+  .login-card h1 {
+    font-size: 25px;
+  }
+
+  .login-logo {
+    width: 72px;
+    height: 72px;
+
+    font-size: 36px;
+  }
+
 }
 
-button{
-  border:none;
-  border-radius:8px;
-  padding:10px 16px;
-  cursor:pointer;
-  transition:.3s;
-}
 
-button:hover{
-  transform:translateY(-2px);
-}
+@media (max-width: 380px) {
 
-input,
-select{
-  padding:10px;
-  border:1px solid #ddd;
-  border-radius:8px;
-}
+  .login-card {
+    padding: 28px 18px;
+  }
 
-h1,h2,h3{
-  color:#1e293b;
-}
-h1 {
-  color: #1e293b !important;
-}
+  .login-card h1 {
+    font-size: 22px;
+  }
 
-h2 {
-  color: #1e293b !important;
-}
-
-a {
-  color: #1e293b !important;
-  text-decoration: none;
 }

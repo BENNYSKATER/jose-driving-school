@@ -1,301 +1,575 @@
 import { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { StudentContext } from "../context/StudentContext";
 import "../css/Students.css";
-import { Link } from "react-router-dom";
 import { generateReceipt } from "../utils/generateReceipt";
-console.log(generateReceipt);
 
 function Students() {
+  const {
+    students,
+    deleteStudent,
+    updateStudent,
+  } = useContext(StudentContext);
+
   const [search, setSearch] = useState("");
-  console.log(useContext(StudentContext));
-    const { students, deleteStudent, updateStudent } =
-  useContext(StudentContext);
-  const actionBtn = {
-  border: "none",
-  padding: "8px 12px",
-  borderRadius: "8px",
-  cursor: "pointer",
-  color: "white",
-  fontWeight: "bold",
-  fontSize: "13px",
-};
+
+  const navigate = useNavigate();
+
+  // =========================
+  // SEARCH
+  // =========================
+  const filteredStudents = students.filter((student) => {
+    const searchText = search.toLowerCase().trim();
+
+    return (
+      student.name
+        ?.toLowerCase()
+        .includes(searchText) ||
+      String(student.mobile || "").includes(searchText)
+    );
+  });
+
+  // =========================
+  // DELETE
+  // =========================
+  const handleDelete = (student) => {
+    const confirmDelete = window.confirm(
+      `Delete ${student.name}?`
+    );
+
+    if (!confirmDelete) return;
+
+    deleteStudent(student.id);
+  };
+
+  // =========================
+  // MARK PAID
+  // =========================
+  const handleMarkPaid = (student) => {
+    const totalFees = Number(student.fees || 0);
+
+    updateStudent(student.id, {
+      paid: totalFees,
+      balance: 0,
+      status: "Paid",
+    });
+  };
+
+  // =========================
+  // ADD CLASS
+  // =========================
+  const handleAddClass = (student) => {
+    updateStudent(student.id, {
+      practiceClasses:
+        Number(student.practiceClasses || 0) + 1,
+    });
+  };
+
+  // =========================
+  // PAYMENT
+  // =========================
+  const handlePayment = (student) => {
+    const amount = Number(
+      window.prompt(
+        `Enter payment amount for ${student.name}`
+      )
+    );
+
+    if (!amount || amount <= 0) return;
+
+    const totalFees = Number(student.fees || 0);
+    const currentPaid = Number(student.paid || 0);
+    const currentBalance = totalFees - currentPaid;
+
+    if (amount > currentBalance) {
+      alert(
+        `Payment cannot be greater than balance ₹${currentBalance}`
+      );
+      return;
+    }
+
+    const newPaid = currentPaid + amount;
+    const newBalance = totalFees - newPaid;
+
+    const updatedStudent = {
+      ...student,
+
+      paid: newPaid,
+
+      balance: newBalance,
+
+      status:
+        newBalance <= 0
+          ? "Paid"
+          : "Pending",
+
+      paymentHistory: [
+        ...(student.paymentHistory || []),
+        {
+          amount: amount,
+          date: new Date().toLocaleDateString(),
+        },
+      ],
+    };
+
+    updateStudent(
+      student.id,
+      updatedStudent
+    );
+
+    generateReceipt(
+      updatedStudent,
+      amount
+    );
+  };
+
+  // =========================
+  // OPEN PROFILE
+  // =========================
+  const openProfile = (student) => {
+    navigate(`/student/${student.id}`);
+  };
+
   return (
-  <div
-  style={{
-    padding: "30px",
-    background: "#f4f7fb",
-    minHeight: "100vh",
-  }}
->
+    <div className="students-page">
 
-  {/* Header */}
+      {/* ================= HEADER ================= */}
 
-  <div
-    style={{
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginBottom: "25px",
-    }}
-  >
+      <div className="students-header">
 
-    <div>
-      <h1
-        style={{
-          margin: 0,
-          color: "#1e3a8a",
-        }}
-      >
-        👨‍🎓 Students
-      </h1>
+        <div className="students-title">
 
-      <p
-        style={{
-          color: "#6b7280",
-          marginTop: "6px",
-        }}
-      >
-        Manage all driving school students
-      </p>
-    </div>
+          <div className="students-title-icon">
+            👨‍🎓
+          </div>
 
-    <Link to="/add-student">
-      <button
-        style={{
-          background: "#2563eb",
-          color: "white",
-          border: "none",
-          padding: "12px 22px",
-          borderRadius: "10px",
-          cursor: "pointer",
-          fontWeight: "bold",
-        }}
-      >
-        ➕ Add Student
-      </button>
-    </Link>
+          <div>
+            <h1>Students</h1>
 
-  </div>
+            <p>
+              Manage all driving school students
+            </p>
+          </div>
 
-  {/* Search */}
+        </div>
 
-  <input
-    type="text"
-    placeholder="🔍 Search Student..."
-    value={search}
-    onChange={(e) => setSearch(e.target.value)}
-    style={{
-      width: "350px",
-      padding: "12px",
-      borderRadius: "10px",
-      border: "1px solid #ddd",
-      marginBottom: "25px",
-      background: "#fff",
-    }}
-  />
-<div
-style={{
-background:"#fff",
-padding:"20px",
-borderRadius:"15px",
-boxShadow:"0 8px 20px rgba(0,0,0,.08)",
-}}
->
-
-<table
-border="1"
-cellPadding="10"
-className="students-table"
->
-        <thead>
-         <tr>
-  <th>Name</th>
-  <th>Mobile</th>
-  <th>Vehicle</th>
-  <th>Fees</th>
-  <th>Paid</th>
-  <th>Balance</th>
-  <th>Status</th>
-  <th>Actions</th>
-  <th>Practice Classes</th>
-  
-</tr>
-        </thead>
-
-        <tbody>
-  {students.length === 0 ? (
-    <tr>
-      <td colSpan="4">No Students Found</td>
-      <td>
- 
-</td>
-    </tr>
-  ) : (
-   students
-  .filter((student) =>
-    student.name.toLowerCase().includes(search.toLowerCase())
-  )
-  .map((student, index) => (
-     <tr key={index}>
- <td>
-  <Link
-    to={`/student/${index}`}
-    style={{
-      color: "#2563eb",
-      fontWeight: "bold",
-      textDecoration: "none",
-    }}
-  >
-    {student.name}
-  </Link>
-</td>
-  <td>{student.mobile}</td>
-  <td>{student.vehicle}</td>
-
-  <td>₹{student.fees}</td>
-  <td>₹{student.paid}</td>
-  <td>₹{student.balance}</td>
-
-  {/* Status */}
-  <td>
-    <span
-  style={{
-    background:
-      student.status === "Paid"
-        ? "#dcfce7"
-        : "#fee2e2",
-    color:
-      student.status === "Paid"
-        ? "#166534"
-        : "#991b1b",
-    padding: "6px 12px",
-    borderRadius: "20px",
-    fontWeight: "bold",
-    fontSize: "13px",
-  }}
->
-  {student.status}
-</span>
-
-  </td>
-
-  {/* Actions */}
-  <td>
-   <Link to={`/edit-student/${index}`}>
-  <button
-    style={{
-      ...actionBtn,
-      background: "#3b82f6",
-      marginBottom: "5px",
-    }}
-  >
-    ✏️ Edit
-  </button>
-</Link>
-
-    <br />
-
-    <button
-      onClick={() => {
-        if (window.confirm("Delete this student?")) {
-          deleteStudent(index);
-        }
-      }}
-      style={{
-...actionBtn,
-background:"#ef4444",
-marginBottom:"5px",
-}}
-    >
-      🗑 Delete
-    </button>
-
-    <br />
-
-    {student.status !== "Paid" && (
-      <>
-        <button
-          onClick={() => {
-            updateStudent(index, {
-              ...student,
-              status: "Paid",
-            });
-          }}
-          style={{
-...actionBtn,
-background:"#16a34a",
-marginBottom:"5px",
-}}
+        <Link
+          to="/add-student"
+          className="add-student-link"
         >
-          💰 Mark Paid
-        </button>
+          <span>＋</span>
+          Add Student
+        </Link>
 
-        <br />
-      </>
-    )}
+      </div>
 
-    <button
-      onClick={() => {
-        updateStudent(index, {
-          ...student,
-          classesCompleted: (student.classesCompleted || 0) + 1,
-        });
-      }}
-      style={{
-  ...actionBtn,
-  background: "#8b5cf6",
-}}
-    >
-      ➕ Class
-    </button>
 
-    <br />
+      {/* ================= SEARCH ================= */}
 
-    <button
-      onClick={() => {
-        const amount = Number(prompt("Enter Payment Amount"));
+      <div className="student-search-section">
 
-        if (!amount || amount <= 0) return;
+        <div className="student-search-wrapper">
 
-        const paid = (student.paid || 0) + amount;
-        const balance = student.fees - paid;
+          <span className="search-icon">
+            🔍
+          </span>
 
-        const updatedStudent = {
-          ...student,
-          paid,
-          balance,
-          status: balance <= 0 ? "Paid" : "Pending",
-          paymentHistory: [
-            ...(student.paymentHistory || []),
-            {
-              amount,
-              date: new Date().toLocaleDateString(),
-            },
-          ],
-        };
+          <input
+            type="text"
+            placeholder="Search by name or mobile number..."
+            value={search}
+            onChange={(e) =>
+              setSearch(e.target.value)
+            }
+          />
 
-        updateStudent(index, updatedStudent);
-        generateReceipt(updatedStudent, amount);
-      }}
-      style={{
-  ...actionBtn,
-  background: "#22c55e",
-}}
-    >
-      💰 Pay
-    </button>
-  </td>
+          {search && (
+            <button
+              type="button"
+              className="clear-search"
+              onClick={() => setSearch("")}
+            >
+              ✕
+            </button>
+          )}
 
-  {/* Practice Classes */}
-  <td>{student.classesCompleted || 0}</td>
-</tr>
-        ))
-      )}
-    </tbody>
-  </table>
-</div>
-</div>
-);
+        </div>
+
+      </div>
+
+
+      {/* ================= RESULT INFO ================= */}
+
+      <div className="students-result-info">
+
+        <span>
+          Total Students:
+          <strong>
+            {students.length}
+          </strong>
+        </span>
+
+        {search && (
+          <span>
+            Showing:
+            <strong>
+              {filteredStudents.length}
+            </strong>
+          </span>
+        )}
+
+      </div>
+
+
+      {/* ================= TABLE ================= */}
+
+      <div className="students-table-card">
+
+        <div className="table-wrapper">
+
+          <table>
+
+            <thead>
+
+              <tr>
+                <th>Student</th>
+                <th>Mobile</th>
+                <th>Vehicle</th>
+                <th>Total Fees</th>
+                <th>Paid</th>
+                <th>Balance</th>
+                <th>Status</th>
+                <th>Classes</th>
+                <th>Actions</th>
+              </tr>
+
+            </thead>
+
+
+            <tbody>
+
+              {filteredStudents.length === 0 ? (
+
+                <tr>
+
+                  <td
+                    colSpan="9"
+                    className="no-students"
+                  >
+
+                    <div className="empty-state">
+
+                      <div className="empty-icon">
+                        👨‍🎓
+                      </div>
+
+                      <h3>
+                        No students found
+                      </h3>
+
+                      <p>
+                        {search
+                          ? "Try another search"
+                          : "Add your first student"}
+                      </p>
+
+                    </div>
+
+                  </td>
+
+                </tr>
+
+              ) : (
+
+                filteredStudents.map(
+                  (student) => {
+
+                    const balance =
+                      Number(
+                        student.balance || 0
+                      );
+
+                    const paid =
+                      Number(
+                        student.paid || 0
+                      );
+
+                    return (
+
+                      <tr
+                        key={student.id}
+                      >
+
+                        {/* ================= STUDENT ================= */}
+
+                        <td>
+
+                          <button
+                            type="button"
+                            className="student-name"
+                            onClick={() =>
+                              openProfile(student)
+                            }
+                          >
+
+                            <span className="student-avatar">
+
+                              {student.photo ? (
+
+                                <img
+                                  src={student.photo}
+                                  alt={student.name}
+                                />
+
+                              ) : (
+
+                                "👤"
+
+                              )}
+
+                            </span>
+
+
+                            <span className="student-info">
+
+                              <strong>
+                                {student.name}
+                              </strong>
+
+                              <small>
+                                {student.licenseType ||
+                                  "License not set"}
+                              </small>
+
+                            </span>
+
+                          </button>
+
+                        </td>
+
+
+                        {/* ================= MOBILE ================= */}
+
+                        <td>
+
+                          <span className="mobile-number">
+                            📱 {student.mobile}
+                          </span>
+
+                        </td>
+
+
+                        {/* ================= VEHICLE ================= */}
+
+                        <td>
+
+                          <span className="vehicle-badge">
+                            🚗 {student.vehicle}
+                          </span>
+
+                        </td>
+
+
+                        {/* ================= FEES ================= */}
+
+                        <td>
+
+                          <strong className="fee-value">
+                            ₹
+                            {Number(
+                              student.fees || 0
+                            )}
+                          </strong>
+
+                        </td>
+
+
+                        {/* ================= PAID ================= */}
+
+                        <td>
+
+                          <span className="paid-amount">
+                            ₹{paid}
+                          </span>
+
+                        </td>
+
+
+                        {/* ================= BALANCE ================= */}
+
+                        <td>
+
+                          <span
+                            className={
+                              balance > 0
+                                ? "balance-pending"
+                                : "balance-paid"
+                            }
+                          >
+                            ₹{balance}
+                          </span>
+
+                        </td>
+
+
+                        {/* ================= STATUS ================= */}
+
+                        <td>
+
+                          <span
+                            className={
+                              student.status === "Paid"
+                                ? "status paid"
+                                : "status pending"
+                            }
+                          >
+
+                            <span className="status-dot">
+                              ●
+                            </span>
+
+                            {student.status ||
+                              "Pending"}
+
+                          </span>
+
+                        </td>
+
+
+                        {/* ================= CLASSES ================= */}
+
+                        <td>
+
+                          <span className="classes-count">
+                            {student.practiceClasses ||
+                              0}
+                          </span>
+
+                        </td>
+
+
+                        {/* ================= ACTIONS ================= */}
+
+                        <td>
+
+                          <div className="actions">
+
+                            {/* VIEW */}
+
+                            <button
+                              type="button"
+                              className="action view"
+                              onClick={() =>
+                                openProfile(student)
+                              }
+                              title="View Profile"
+                            >
+                              👁️
+                            </button>
+
+
+                            {/* EDIT */}
+
+                            <button
+                              type="button"
+                              className="action edit"
+                              onClick={() =>
+                                navigate(
+                                  `/edit-student/${student.id}`
+                                )
+                              }
+                              title="Edit Student"
+                            >
+                              ✏️
+                            </button>
+
+
+                            {/* DELETE */}
+
+                            <button
+                              type="button"
+                              className="action delete"
+                              onClick={() =>
+                                handleDelete(student)
+                              }
+                              title="Delete Student"
+                            >
+                              🗑️
+                            </button>
+
+
+                            {/* MARK PAID */}
+
+                            {student.status !==
+                              "Paid" && (
+
+                              <button
+                                type="button"
+                                className="action mark-paid"
+                                onClick={() =>
+                                  handleMarkPaid(student)
+                                }
+                                title="Mark Fully Paid"
+                              >
+                                ✓
+                              </button>
+
+                            )}
+
+
+                            {/* ADD CLASS */}
+
+                            <button
+                              type="button"
+                              className="action class-btn"
+                              onClick={() =>
+                                handleAddClass(student)
+                              }
+                              title="Add Practice Class"
+                            >
+                              +1
+                            </button>
+
+
+                            {/* PAYMENT */}
+
+                            {balance > 0 && (
+
+                              <button
+                                type="button"
+                                className="action pay"
+                                onClick={() =>
+                                  handlePayment(student)
+                                }
+                                title="Make Payment"
+                              >
+                                ₹
+                              </button>
+
+                            )}
+
+                          </div>
+
+                        </td>
+
+                      </tr>
+
+                    );
+                  }
+                )
+
+              )}
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </div>
+  );
 }
 
 export default Students;

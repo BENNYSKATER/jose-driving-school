@@ -1,108 +1,422 @@
-import { useContext } from "react";
-import { Link } from "react-router-dom";
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  FaCar,
+  FaPlus,
+  FaSearch,
+  FaEdit,
+  FaTrash,
+  FaEye,
+  FaCheckCircle,
+  FaTimesCircle,
+  FaTools,
+  FaMotorcycle,
+} from "react-icons/fa";
+
 import { VehicleContext } from "../context/VehicleContext";
+import "../css/Vehicles.css";
 
 function Vehicles() {
- const {
-  vehicles,
-  deleteVehicle,
-  updateVehicle,
-} = useContext(VehicleContext);
+  const navigate = useNavigate();
 
-  return (
-    <div style={{ padding: "30px" }}>
-      <h1>🚗 Vehicles</h1>
+  const { vehicles, deleteVehicle } = useContext(VehicleContext);
 
-      <Link to="/add-vehicle">
-        <button
-          style={{
-            padding: "10px 20px",
-            background: "green",
-            color: "white",
-            border: "none",
-            borderRadius: "8px",
-            cursor: "pointer",
-            marginBottom: "20px",
-          }}
-        >
-          ➕ Add Vehicle
-        </button>
-      </Link>
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("All");
 
-      <h3>Total Vehicles: {vehicles.length}</h3>
+  const vehicleList = Array.isArray(vehicles) ? vehicles : [];
 
-      <table
-        border="1"
-        cellPadding="10"
-        style={{ width: "100%", marginTop: "20px" }}
-      >
-        <thead>
-          <tr>
-            <th>Vehicle Number</th>
-            <th>Type</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
+  const filteredVehicles = vehicleList.filter((vehicle) => {
+    const searchText = search.toLowerCase();
 
-        <tbody>
-          {vehicles.length === 0 ? (
-            <tr>
-              <td colSpan="4">No Vehicles Found</td>
-            </tr>
-          ) : (
-            vehicles.map((vehicle, index) => (
-              <tr key={index}>
-                <td>{vehicle.number}</td>
-                <td>{vehicle.type}</td>
-                <td>{vehicle.status}</td>
+    const matchesSearch =
+      String(vehicle.name || "")
+        .toLowerCase()
+        .includes(searchText) ||
+      String(vehicle.number || "")
+        .toLowerCase()
+        .includes(searchText) ||
+      String(vehicle.type || "")
+        .toLowerCase()
+        .includes(searchText);
 
-                <td>
-                  <button
-  style={{
-    marginRight: "8px",
-    background: "orange",
-    color: "white",
-    border: "none",
-    padding: "6px 12px",
-    borderRadius: "6px",
-    cursor: "pointer",
-  }}
-  onClick={() => {
-    const newNumber = prompt(
-      "Enter Vehicle Number",
-      vehicle.number
+    const matchesFilter =
+      filter === "All" ||
+      String(vehicle.status || "") === filter;
+
+    return matchesSearch && matchesFilter;
+  });
+
+  const totalVehicles = vehicleList.length;
+
+  const activeVehicles = vehicleList.filter(
+    (vehicle) =>
+      vehicle.status === "Active"
+  ).length;
+
+  const maintenanceVehicles = vehicleList.filter(
+    (vehicle) =>
+      vehicle.status === "Maintenance"
+  ).length;
+
+  const inactiveVehicles = vehicleList.filter(
+    (vehicle) =>
+      vehicle.status === "Inactive"
+  ).length;
+
+  const handleDelete = (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this vehicle?"
     );
 
-    if (!newNumber) return;
+    if (!confirmDelete) return;
 
-    updateVehicle(index, {
-      ...vehicle,
-      number: newNumber,
-    });
-  }}
->
-  ✏️ Edit
-</button>
+    deleteVehicle(id);
+  };
+
+  return (
+    <div className="vehicles-page">
+
+      {/* HEADER */}
+
+      <div className="vehicles-header">
+
+        <div>
+          <div className="vehicles-title">
+
+            <div className="vehicles-title-icon">
+              <FaCar />
+            </div>
+
+            <div>
+              <h1>Vehicles</h1>
+
+              <p>
+                Manage Jose Driving School vehicles
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        <button
+          className="add-vehicle-btn"
+          onClick={() =>
+            navigate("/add-vehicle")
+          }
+        >
+          <FaPlus />
+          Add Vehicle
+        </button>
+
+      </div>
+
+
+      {/* STATS */}
+
+      <div className="vehicle-stats">
+
+        <div className="vehicle-stat-card">
+
+          <div className="stat-icon blue">
+            <FaCar />
+          </div>
+
+          <div>
+            <span>Total Vehicles</span>
+            <strong>{totalVehicles}</strong>
+          </div>
+
+        </div>
+
+
+        <div className="vehicle-stat-card">
+
+          <div className="stat-icon green">
+            <FaCheckCircle />
+          </div>
+
+          <div>
+            <span>Active</span>
+            <strong>{activeVehicles}</strong>
+          </div>
+
+        </div>
+
+
+        <div className="vehicle-stat-card">
+
+          <div className="stat-icon orange">
+            <FaTools />
+          </div>
+
+          <div>
+            <span>Maintenance</span>
+            <strong>{maintenanceVehicles}</strong>
+          </div>
+
+        </div>
+
+
+        <div className="vehicle-stat-card">
+
+          <div className="stat-icon red">
+            <FaTimesCircle />
+          </div>
+
+          <div>
+            <span>Inactive</span>
+            <strong>{inactiveVehicles}</strong>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      {/* TOOLBAR */}
+
+      <div className="vehicles-toolbar">
+
+        <div className="vehicle-search">
+
+          <FaSearch />
+
+          <input
+            type="text"
+            placeholder="Search vehicle..."
+            value={search}
+            onChange={(e) =>
+              setSearch(e.target.value)
+            }
+          />
+
+        </div>
+
+
+        <div className="vehicle-filter">
+
+          <button
+            className={
+              filter === "All"
+                ? "active"
+                : ""
+            }
+            onClick={() =>
+              setFilter("All")
+            }
+          >
+            All
+          </button>
+
+          <button
+            className={
+              filter === "Active"
+                ? "active"
+                : ""
+            }
+            onClick={() =>
+              setFilter("Active")
+            }
+          >
+            Active
+          </button>
+
+          <button
+            className={
+              filter === "Maintenance"
+                ? "active"
+                : ""
+            }
+            onClick={() =>
+              setFilter("Maintenance")
+            }
+          >
+            Maintenance
+          </button>
+
+          <button
+            className={
+              filter === "Inactive"
+                ? "active"
+                : ""
+            }
+            onClick={() =>
+              setFilter("Inactive")
+            }
+          >
+            Inactive
+          </button>
+
+        </div>
+
+      </div>
+
+
+      {/* VEHICLE GRID */}
+
+      <div className="vehicle-grid">
+
+        {filteredVehicles.length === 0 ? (
+
+          <div className="vehicle-empty">
+
+            <div className="empty-icon">
+              <FaCar />
+            </div>
+
+            <h2>
+              No Vehicles Found
+            </h2>
+
+            <p>
+              Add your first vehicle to start
+              managing your driving school fleet.
+            </p>
+
+            <button
+              onClick={() =>
+                navigate("/add-vehicle")
+              }
+            >
+              <FaPlus />
+              Add Vehicle
+            </button>
+
+          </div>
+
+        ) : (
+
+          filteredVehicles.map((vehicle) => (
+
+            <div
+              className="vehicle-card"
+              key={vehicle.id}
+            >
+
+              {/* CARD TOP */}
+
+              <div className="vehicle-card-top">
+
+                <div className="vehicle-image">
+
+                  {vehicle.type === "Bike" ? (
+                    <FaMotorcycle />
+                  ) : (
+                    <FaCar />
+                  )}
+
+                </div>
+
+                <div className="vehicle-card-actions">
+
                   <button
-                    style={{
-                      background: "red",
-                      color: "white",
-                      border: "none",
-                      padding: "6px 12px",
-                      borderRadius: "6px",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => deleteVehicle(index)}
+                    title="View"
+                    onClick={() =>
+                      navigate(
+                        `/vehicle/${vehicle.id}`
+                      )
+                    }
                   >
-                    Delete
+                    <FaEye />
                   </button>
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+
+                  <button
+                    title="Edit"
+                    onClick={() =>
+                      navigate(
+                        `/edit-vehicle/${vehicle.id}`
+                      )
+                    }
+                  >
+                    <FaEdit />
+                  </button>
+
+                  <button
+                    title="Delete"
+                    className="delete-action"
+                    onClick={() =>
+                      handleDelete(vehicle.id)
+                    }
+                  >
+                    <FaTrash />
+                  </button>
+
+                </div>
+
+              </div>
+
+
+              {/* VEHICLE INFO */}
+
+              <div className="vehicle-info">
+
+                <h2>
+                  {vehicle.name ||
+                    "Unnamed Vehicle"}
+                </h2>
+
+                <div className="vehicle-number">
+                  {vehicle.number ||
+                    "Number not added"}
+                </div>
+
+                <div className="vehicle-details">
+
+                  <div>
+                    <span>Type</span>
+                    <strong>
+                      {vehicle.type ||
+                        "Not specified"}
+                    </strong>
+                  </div>
+
+                  <div>
+                    <span>Model</span>
+                    <strong>
+                      {vehicle.model ||
+                        "Not specified"}
+                    </strong>
+                  </div>
+
+                </div>
+
+              </div>
+
+
+              {/* STATUS */}
+
+              <div className="vehicle-card-footer">
+
+                <span
+                  className={`vehicle-status ${
+                    String(
+                      vehicle.status ||
+                        "Active"
+                    ).toLowerCase()
+                  }`}
+                >
+                  <span className="status-dot"></span>
+
+                  {vehicle.status ||
+                    "Active"}
+
+                </span>
+
+                <span className="vehicle-year">
+                  {vehicle.year || ""}
+                </span>
+
+              </div>
+
+            </div>
+
+          ))
+
+        )}
+
+      </div>
+
     </div>
   );
 }

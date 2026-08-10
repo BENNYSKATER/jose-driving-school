@@ -1,114 +1,417 @@
-:root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+/* =====================================================
+   JOSE DRIVING SCHOOL - GLOBAL CSS
+===================================================== */
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
-  font-family: "Poppins", sans-serif;
-  background: #f5f7fb;
-  color: #1f2937;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  background: #f4f7fb;
+  color: #1e293b;
 }
 
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
+/* =====================================================
+   LOGIN PAGE
+===================================================== */
+
+.login-container {
+  min-height: 100vh;
+  width: 100%;
   display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+
+  background:
+    radial-gradient(
+      circle at 15% 20%,
+      rgba(37, 99, 235, 0.18),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 85% 80%,
+      rgba(14, 165, 233, 0.16),
+      transparent 35%
+    ),
+    linear-gradient(
+      135deg,
+      #eef4ff 0%,
+      #f8fafc 50%,
+      #edf6ff 100%
+    );
 }
+
+/* =====================================================
+   LOGIN CARD
+===================================================== */
+
+.login-box {
+  width: 100%;
+  max-width: 430px;
+
+  background: rgba(255, 255, 255, 0.96);
+
+  padding: 42px 40px;
+
+  border-radius: 24px;
+
+  text-align: center;
+
+  border: 1px solid rgba(255, 255, 255, 0.8);
+
+  box-shadow:
+    0 25px 60px rgba(15, 23, 42, 0.14),
+    0 8px 25px rgba(37, 99, 235, 0.08);
+
+  backdrop-filter: blur(12px);
+
+  animation: loginCard 0.5s ease;
+}
+
+@keyframes loginCard {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* =====================================================
+   LOGIN LOGO
+===================================================== */
+
+.login-box .logo {
+  width: 82px;
+  height: 82px;
+
+  margin: 0 auto 18px;
+
+  border-radius: 22px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 42px;
+
+  background: linear-gradient(
+    135deg,
+    #2563eb,
+    #1d4ed8
+  );
+
+  box-shadow:
+    0 12px 25px rgba(37, 99, 235, 0.28);
+
+  transform: rotate(-2deg);
+}
+
+/* =====================================================
+   LOGIN TITLE
+===================================================== */
+
+.login-box h1 {
+  margin: 0;
+
+  color: #0f172a;
+
+  font-size: 30px;
+
+  font-weight: 800;
+
+  letter-spacing: -0.5px;
+}
+
+/* =====================================================
+   LOGIN SUBTITLE
+===================================================== */
+
+.login-box p {
+  margin-top: 8px;
+  margin-bottom: 30px;
+
+  color: #64748b;
+
+  font-size: 15px;
+
+  font-weight: 500;
+}
+
+/* =====================================================
+   LOGIN INPUTS
+===================================================== */
+
+.login-box input {
+  width: 100%;
+
+  height: 50px;
+
+  padding: 0 16px;
+
+  margin: 9px 0;
+
+  background: #f8fafc;
+
+  color: #0f172a;
+
+  border: 1px solid #e2e8f0;
+
+  border-radius: 12px;
+
+  outline: none;
+
+  font-size: 15px;
+
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+}
+
+.login-box input::placeholder {
+  color: #94a3b8;
+}
+
+.login-box input:focus {
+  background: #ffffff;
+
+  border-color: #2563eb;
+
+  box-shadow:
+    0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+/* =====================================================
+   LOGIN BUTTON
+===================================================== */
+
+.login-box button {
+  width: 100%;
+
+  height: 50px;
+
+  margin-top: 12px;
+
+  border: none;
+
+  border-radius: 12px;
+
+  background: linear-gradient(
+    135deg,
+    #2563eb,
+    #1d4ed8
+  );
+
+  color: #ffffff;
+
+  font-size: 16px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 10px 20px rgba(37, 99, 235, 0.22);
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+}
+
+.login-box button:hover {
+  background: linear-gradient(
+    135deg,
+    #1d4ed8,
+    #1e40af
+  );
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 14px 28px rgba(37, 99, 235, 0.28);
+}
+
+.login-box button:active {
+  transform: translateY(0);
+}
+
+/* =====================================================
+   LOGIN LINK
+===================================================== */
+
+.login-box a {
+  display: inline-block;
+
+  margin-top: 22px;
+
+  color: #2563eb !important;
+
+  font-weight: 700;
+
+  transition: 0.2s ease;
+}
+
+.login-box a:hover {
+  color: #1d4ed8 !important;
+}
+
+/* =====================================================
+   GLOBAL BUTTONS
+===================================================== */
+
+button {
+  border: none;
+
+  border-radius: 9px;
+
+  padding: 10px 16px;
+
+  cursor: pointer;
+
+  font-family: inherit;
+
+  font-weight: 600;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+}
+
+/* =====================================================
+   GLOBAL INPUTS
+===================================================== */
+
+input,
+select,
+textarea {
+  font-family: inherit;
+  outline: none;
+}
+
+/* =====================================================
+   TABLES
+===================================================== */
+
+table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  background: #ffffff;
+
+  border-radius: 14px;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 6px 18px rgba(15, 23, 42, 0.07);
+}
+
+th {
+  background: #2563eb;
+
+  color: #ffffff;
+
+  padding: 14px;
+
+  text-align: left;
+
+  font-size: 14px;
+
+  font-weight: 700;
+}
+
+td {
+  padding: 14px;
+
+  border-bottom: 1px solid #eef2f7;
+
+  color: #334155;
+
+  font-size: 14px;
+}
+
+tr:hover {
+  background: #f8fbff;
+}
+
+/* =====================================================
+   HEADINGS
+===================================================== */
 
 h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+h2,
+h3 {
+  color: #1e293b;
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
+/* =====================================================
+   LINKS
+===================================================== */
+
+a {
+  color: #2563eb;
+
+  text-decoration: none;
+}
+
+a:hover {
+  color: #1d4ed8;
+}
+
+/* =====================================================
+   RESPONSIVE LOGIN
+===================================================== */
+
+@media (max-width: 600px) {
+  .login-container {
+    padding: 20px;
+  }
+
+  .login-box {
+    max-width: 100%;
+
+    padding: 34px 24px;
+
+    border-radius: 20px;
+  }
+
+  .login-box h1 {
+    font-size: 25px;
+  }
+
+  .login-box .logo {
+    width: 72px;
+    height: 72px;
+
     font-size: 36px;
-    margin: 20px 0;
   }
 }
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
+
+@media (max-width: 380px) {
+  .login-box {
+    padding: 28px 18px;
   }
-}
-p {
-  margin: 0;
-}
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
-
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+  .login-box h1 {
+    font-size: 22px;
+  }
 }

@@ -1,0 +1,692 @@
+/* =====================================================
+   JOSE DRIVING SCHOOL
+   ADD VEHICLE PAGE
+===================================================== */
+
+.add-vehicle-page {
+  min-height: 100vh;
+  padding: 30px;
+  background: #f5f7fb;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.add-vehicle-header {
+  margin-bottom: 25px;
+}
+
+.vehicle-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 8px 0;
+
+  background: transparent;
+  color: #64748b;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.vehicle-back-btn:hover {
+  color: #2563eb;
+  transform: none;
+}
+
+.add-vehicle-title {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  margin-top: 14px;
+}
+
+.add-vehicle-title-icon {
+  width: 54px;
+  height: 54px;
+
+  border-radius: 15px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #e8f0ff;
+  color: #2563eb;
+
+  font-size: 23px;
+}
+
+.add-vehicle-title h1 {
+  margin: 0;
+
+  font-size: 28px;
+  font-weight: 800;
+
+  color: #0f172a;
+}
+
+.add-vehicle-title p {
+  margin: 5px 0 0;
+
+  color: #64748b;
+
+  font-size: 14px;
+}
+
+
+/* =====================================================
+   ERROR
+===================================================== */
+
+.vehicle-form-error {
+  margin-bottom: 20px;
+
+  padding: 13px 16px;
+
+  border-radius: 11px;
+
+  background: #fff1f2;
+
+  border: 1px solid #fecdd3;
+
+  color: #be123c;
+
+  font-size: 14px;
+
+  font-weight: 600;
+}
+
+
+/* =====================================================
+   LAYOUT
+===================================================== */
+
+.add-vehicle-layout {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    340px;
+
+  gap: 22px;
+
+  align-items: start;
+}
+
+
+/* =====================================================
+   MAIN CARDS
+===================================================== */
+
+.add-vehicle-main {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 20px;
+}
+
+.vehicle-form-card {
+  background: #ffffff;
+
+  border: 1px solid #e7edf5;
+
+  border-radius: 17px;
+
+  padding: 24px;
+
+  box-shadow:
+    0 6px 20px rgba(15, 23, 42, 0.05);
+}
+
+
+/* =====================================================
+   SECTION TITLE
+===================================================== */
+
+.vehicle-section-title {
+  display: flex;
+
+  align-items: center;
+
+  gap: 13px;
+
+  margin-bottom: 22px;
+}
+
+.vehicle-section-title h2 {
+  margin: 0;
+
+  color: #0f172a;
+
+  font-size: 17px;
+
+  font-weight: 800;
+}
+
+.vehicle-section-title p {
+  margin: 4px 0 0;
+
+  color: #94a3b8;
+
+  font-size: 12px;
+}
+
+.section-blue,
+.section-green,
+.section-orange {
+  width: 42px;
+  height: 42px;
+
+  border-radius: 11px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-size: 17px;
+}
+
+.section-blue {
+  background: #eaf1ff;
+  color: #2563eb;
+}
+
+.section-green {
+  background: #eafaf1;
+  color: #16a34a;
+}
+
+.section-orange {
+  background: #fff5e8;
+  color: #ea580c;
+}
+
+
+/* =====================================================
+   FORM GRID
+===================================================== */
+
+.vehicle-form-grid {
+  display: grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap: 18px;
+}
+
+.vehicle-form-group {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+.vehicle-form-group.full {
+  grid-column: 1 / -1;
+}
+
+.vehicle-form-group label {
+  color: #334155;
+
+  font-size: 13px;
+
+  font-weight: 700;
+}
+
+.vehicle-form-group label span {
+  color: #ef4444;
+
+  margin-left: 3px;
+}
+
+
+/* =====================================================
+   INPUT
+===================================================== */
+
+.vehicle-input {
+  height: 47px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 0 13px;
+
+  border: 1px solid #e2e8f0;
+
+  border-radius: 10px;
+
+  background: #f8fafc;
+
+  color: #94a3b8;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.vehicle-input:focus-within {
+  background: #ffffff;
+
+  border-color: #2563eb;
+
+  box-shadow:
+    0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+.vehicle-input input,
+.vehicle-input select {
+  width: 100%;
+
+  height: 100%;
+
+  border: none;
+
+  outline: none;
+
+  background: transparent;
+
+  color: #0f172a;
+
+  font-family: inherit;
+
+  font-size: 14px;
+}
+
+.vehicle-input input::placeholder {
+  color: #94a3b8;
+}
+
+.vehicle-input select {
+  cursor: pointer;
+}
+
+
+/* =====================================================
+   VEHICLE TYPE
+===================================================== */
+
+.vehicle-type-options {
+  display: grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap: 15px;
+}
+
+.vehicle-type {
+  min-height: 95px;
+
+  padding: 17px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+  text-align: left;
+
+  background: #f8fafc;
+
+  border: 1px solid #e2e8f0;
+
+  border-radius: 13px;
+
+  color: #64748b;
+}
+
+.vehicle-type:hover {
+  transform: none;
+
+  border-color: #bfdbfe;
+
+  background: #f8fbff;
+}
+
+.vehicle-type svg {
+  font-size: 27px;
+
+  color: #94a3b8;
+}
+
+.vehicle-type div {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+.vehicle-type strong {
+  color: #334155;
+
+  font-size: 14px;
+}
+
+.vehicle-type span {
+  color: #94a3b8;
+
+  font-size: 11px;
+}
+
+.vehicle-type.selected {
+  border-color: #2563eb;
+
+  background: #eff6ff;
+
+  box-shadow:
+    0 0 0 2px rgba(37, 99, 235, 0.08);
+}
+
+.vehicle-type.selected svg {
+  color: #2563eb;
+}
+
+.vehicle-type.selected strong {
+  color: #1d4ed8;
+}
+
+
+/* =====================================================
+   RIGHT SIDE
+===================================================== */
+
+.add-vehicle-side {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 15px;
+
+  position: sticky;
+
+  top: 20px;
+}
+
+
+/* =====================================================
+   PREVIEW
+===================================================== */
+
+.vehicle-preview-card {
+  background: #ffffff;
+
+  border: 1px solid #e7edf5;
+
+  border-radius: 18px;
+
+  padding: 22px;
+
+  text-align: center;
+
+  box-shadow:
+    0 7px 22px rgba(15, 23, 42, 0.06);
+}
+
+.preview-label {
+  color: #94a3b8;
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  letter-spacing: 1.2px;
+}
+
+.preview-icon {
+  width: 78px;
+  height: 78px;
+
+  margin: 17px auto 12px;
+
+  border-radius: 20px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background: #eef4ff;
+
+  color: #2563eb;
+
+  font-size: 34px;
+}
+
+.vehicle-preview-card h2 {
+  margin: 0;
+
+  color: #0f172a;
+
+  font-size: 18px;
+
+  font-weight: 800;
+}
+
+.preview-number {
+  margin-top: 5px;
+
+  color: #2563eb;
+
+  font-size: 13px;
+
+  font-weight: 700;
+}
+
+.preview-details {
+  display: grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap: 9px;
+
+  margin-top: 20px;
+
+  text-align: left;
+}
+
+.preview-details div {
+  padding: 10px;
+
+  border-radius: 9px;
+
+  background: #f8fafc;
+}
+
+.preview-details span {
+  display: block;
+
+  color: #94a3b8;
+
+  font-size: 10px;
+
+  margin-bottom: 4px;
+}
+
+.preview-details strong {
+  color: #334155;
+
+  font-size: 12px;
+}
+
+.preview-status {
+  color: #16a34a !important;
+}
+
+
+/* =====================================================
+   SAVE CARD
+===================================================== */
+
+.vehicle-save-card {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 15px;
+
+  background: #eff6ff;
+
+  border: 1px solid #dbeafe;
+
+  border-radius: 13px;
+}
+
+.save-icon {
+  width: 38px;
+  height: 38px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background: #dbeafe;
+
+  color: #2563eb;
+}
+
+.vehicle-save-card h3 {
+  margin: 0;
+
+  color: #1e3a8a;
+
+  font-size: 13px;
+}
+
+.vehicle-save-card p {
+  margin: 3px 0 0;
+
+  color: #64748b;
+
+  font-size: 11px;
+
+  line-height: 1.4;
+}
+
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+
+.save-vehicle-btn {
+  width: 100%;
+
+  height: 48px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 9px;
+
+  border-radius: 10px;
+
+  background: #2563eb;
+
+  color: white;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  box-shadow:
+    0 8px 18px rgba(37, 99, 235, 0.2);
+}
+
+.save-vehicle-btn:hover {
+  background: #1d4ed8;
+}
+
+.cancel-vehicle-btn {
+  width: 100%;
+
+  height: 44px;
+
+  border-radius: 10px;
+
+  background: #f1f5f9;
+
+  color: #64748b;
+
+  font-size: 13px;
+}
+
+.cancel-vehicle-btn:hover {
+  background: #e2e8f0;
+
+  transform: none;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 950px) {
+
+  .add-vehicle-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .add-vehicle-side {
+    position: static;
+  }
+
+}
+
+
+@media (max-width: 650px) {
+
+  .add-vehicle-page {
+    padding: 18px;
+  }
+
+  .vehicle-form-card {
+    padding: 18px;
+  }
+
+  .vehicle-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .vehicle-form-group.full {
+    grid-column: auto;
+  }
+
+  .vehicle-type-options {
+    grid-template-columns: 1fr;
+  }
+
+  .add-vehicle-title h1 {
+    font-size: 23px;
+  }
+
+}

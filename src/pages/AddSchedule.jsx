@@ -1,113 +1,297 @@
 import { useContext, useState } from "react";
-import { StudentContext } from "../context/StudentContext";
-import { VehicleContext } from "../context/VehicleContext";
-import { InstructorContext } from "../context/InstructorContext";
+import { useNavigate } from "react-router-dom";
+import {
+  FaArrowLeft,
+  FaCalendarAlt,
+  FaClock,
+  FaUserGraduate,
+  FaUserTie,
+  FaCar,
+  FaSave,
+  FaStickyNote,
+} from "react-icons/fa";
+
 import { ScheduleContext } from "../context/ScheduleContext";
+import "../css/AddSchedule.css";
 
 function AddSchedule() {
-  const { students } = useContext(StudentContext);
-  const { vehicles } = useContext(VehicleContext);
-  const { instructors } = useContext(InstructorContext);
- const { schedules, addSchedule } = useContext(ScheduleContext);
+  const navigate = useNavigate();
 
-  const [student, setStudent] = useState("");
-  const [vehicle, setVehicle] = useState("");
-  const [instructor, setInstructor] = useState("");
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
+  const { addSchedule } = useContext(ScheduleContext);
 
-  const save = () => {
-  const exists = schedules.find(
-    (item) =>
-      item.date === date &&
-      item.time === time &&
-      (
-        item.vehicle === vehicle ||
-        item.instructor === instructor
-      )
-  );
-
-  if (exists) {
-    alert("❌ Instructor or Vehicle already booked!");
-    return;
-  }
-
-  addSchedule({
-    student,
-    vehicle,
-    instructor,
-    date,
-    time,
+  const [formData, setFormData] = useState({
+    studentName: "",
+    instructor: "",
+    vehicle: "",
+    date: "",
+    time: "",
+    status: "Scheduled",
+    notes: "",
   });
 
-  alert("✅ Schedule Created Successfully");
+  const handleChange = (e) => {
+    const { name, value } = e.target;
 
-  setStudent("");
-  setVehicle("");
-  setInstructor("");
-  setDate("");
-  setTime("");
-};
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (
+      !formData.studentName ||
+      !formData.instructor ||
+      !formData.vehicle ||
+      !formData.date ||
+      !formData.time
+    ) {
+      alert("Please fill all required fields.");
+      return;
+    }
+
+    const newSchedule = {
+      id: Date.now(),
+      ...formData,
+    };
+
+    addSchedule(newSchedule);
+
+    navigate("/schedule");
+  };
 
   return (
-    <div style={{ padding: "30px" }}>
-      <h1>📅 Create Schedule</h1>
+    <div className="add-schedule-page">
 
-      <select
-        value={student}
-        onChange={(e) => setStudent(e.target.value)}
-      >
-        <option>Select Student</option>
-        {students.map((s, i) => (
-          <option key={i}>{s.name}</option>
-        ))}
-      </select>
+      <div className="add-schedule-header">
 
-      <br /><br />
+        <button
+          className="schedule-back-btn"
+          onClick={() => navigate("/schedule")}
+        >
+          <FaArrowLeft />
+          Back to Schedule
+        </button>
 
-      <select
-        value={vehicle}
-        onChange={(e) => setVehicle(e.target.value)}
-      >
-        <option>Select Vehicle</option>
-        {vehicles.map((v, i) => (
-          <option key={i}>{v.number}</option>
-        ))}
-      </select>
+        <div className="add-schedule-heading">
 
-      <br /><br />
+          <div className="add-schedule-heading-icon">
+            <FaCalendarAlt />
+          </div>
 
-      <select
-        value={instructor}
-        onChange={(e) => setInstructor(e.target.value)}
-      >
-        <option>Select Instructor</option>
-        {instructors.map((ins, i) => (
-          <option key={i}>{ins.name}</option>
-        ))}
-      </select>
+          <div>
+            <h1>Add Schedule</h1>
+            <p>Create a new driving practice schedule</p>
+          </div>
 
-      <br /><br />
+        </div>
 
-      <input
-        type="date"
-        value={date}
-        onChange={(e) => setDate(e.target.value)}
-      />
+      </div>
 
-      <br /><br />
+      <div className="add-schedule-card">
 
-      <input
-        type="time"
-        value={time}
-        onChange={(e) => setTime(e.target.value)}
-      />
+        <div className="add-schedule-card-title">
+          <h2>Schedule Details</h2>
+          <p>
+            Enter the details for the student's driving practice.
+          </p>
+        </div>
 
-      <br /><br />
+        <form onSubmit={handleSubmit}>
 
-      <button onClick={save}>
-        Save Schedule
-      </button>
+          <div className="schedule-form-grid">
+
+            <div className="schedule-form-group">
+
+              <label>
+                <FaUserGraduate />
+                Student
+                <span>*</span>
+              </label>
+
+              <div className="schedule-input-wrapper">
+
+                <FaUserGraduate />
+
+                <input
+                  type="text"
+                  name="studentName"
+                  value={formData.studentName}
+                  onChange={handleChange}
+                  placeholder="Enter student name"
+                />
+
+              </div>
+
+            </div>
+
+            <div className="schedule-form-group">
+
+              <label>
+                <FaUserTie />
+                Instructor
+                <span>*</span>
+              </label>
+
+              <div className="schedule-input-wrapper">
+
+                <FaUserTie />
+
+                <input
+                  type="text"
+                  name="instructor"
+                  value={formData.instructor}
+                  onChange={handleChange}
+                  placeholder="Enter instructor name"
+                />
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <div className="schedule-form-group">
+
+            <label>
+              <FaCar />
+              Vehicle
+              <span>*</span>
+            </label>
+
+            <div className="schedule-input-wrapper">
+
+              <FaCar />
+
+              <input
+                type="text"
+                name="vehicle"
+                value={formData.vehicle}
+                onChange={handleChange}
+                placeholder="Example: TN 38 AB 1234"
+              />
+
+            </div>
+
+          </div>
+
+          <div className="schedule-form-grid">
+
+            <div className="schedule-form-group">
+
+              <label>
+                <FaCalendarAlt />
+                Practice Date
+                <span>*</span>
+              </label>
+
+              <div className="schedule-input-wrapper">
+
+                <FaCalendarAlt />
+
+                <input
+                  type="date"
+                  name="date"
+                  value={formData.date}
+                  onChange={handleChange}
+                />
+
+              </div>
+
+            </div>
+
+            <div className="schedule-form-group">
+
+              <label>
+                <FaClock />
+                Practice Time
+                <span>*</span>
+              </label>
+
+              <div className="schedule-input-wrapper">
+
+                <FaClock />
+
+                <input
+                  type="time"
+                  name="time"
+                  value={formData.time}
+                  onChange={handleChange}
+                />
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <div className="schedule-form-group">
+
+            <label>Status</label>
+
+            <select
+              name="status"
+              value={formData.status}
+              onChange={handleChange}
+            >
+              <option value="Scheduled">
+                Scheduled
+              </option>
+
+              <option value="Completed">
+                Completed
+              </option>
+
+              <option value="Cancelled">
+                Cancelled
+              </option>
+            </select>
+
+          </div>
+
+          <div className="schedule-form-group">
+
+            <label>
+              <FaStickyNote />
+              Notes
+            </label>
+
+            <textarea
+              name="notes"
+              value={formData.notes}
+              onChange={handleChange}
+              placeholder="Add any additional notes..."
+              rows="4"
+            />
+
+          </div>
+
+          <div className="add-schedule-form-footer">
+
+            <button
+              type="button"
+              className="schedule-cancel-btn"
+              onClick={() => navigate("/schedule")}
+            >
+              Cancel
+            </button>
+
+            <button
+              type="submit"
+              className="schedule-save-btn"
+            >
+              <FaSave />
+              Save Schedule
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
     </div>
   );
 }

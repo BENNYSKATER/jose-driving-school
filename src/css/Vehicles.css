@@ -1,0 +1,628 @@
+/* =====================================================
+   JOSE DRIVING SCHOOL
+   VEHICLES PAGE
+===================================================== */
+
+.vehicles-page {
+  min-height: 100vh;
+  padding: 30px;
+  background: #f5f7fb;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.vehicles-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.vehicles-title {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.vehicles-title-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #e8f0ff;
+  color: #2563eb;
+
+  font-size: 23px;
+}
+
+.vehicles-title h1 {
+  margin: 0;
+
+  font-size: 28px;
+  font-weight: 800;
+
+  color: #0f172a;
+}
+
+.vehicles-title p {
+  margin: 5px 0 0;
+
+  color: #64748b;
+  font-size: 14px;
+}
+
+
+/* =====================================================
+   ADD BUTTON
+===================================================== */
+
+.add-vehicle-btn {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  padding: 12px 18px;
+
+  border-radius: 11px;
+
+  background: #2563eb;
+  color: white;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  box-shadow:
+    0 8px 18px rgba(37, 99, 235, 0.2);
+}
+
+.add-vehicle-btn:hover {
+  background: #1d4ed8;
+}
+
+
+/* =====================================================
+   STATS
+===================================================== */
+
+.vehicle-stats {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  gap: 18px;
+
+  margin-bottom: 24px;
+}
+
+.vehicle-stat-card {
+  background: white;
+
+  border: 1px solid #e8edf4;
+
+  border-radius: 16px;
+
+  padding: 20px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 15px;
+
+  box-shadow:
+    0 5px 18px rgba(15, 23, 42, 0.05);
+}
+
+.stat-icon {
+  width: 46px;
+  height: 46px;
+
+  border-radius: 13px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 19px;
+}
+
+.stat-icon.blue {
+  background: #e8f0ff;
+  color: #2563eb;
+}
+
+.stat-icon.green {
+  background: #eafaf1;
+  color: #16a34a;
+}
+
+.stat-icon.orange {
+  background: #fff5e6;
+  color: #ea580c;
+}
+
+.stat-icon.red {
+  background: #fff0f0;
+  color: #dc2626;
+}
+
+.vehicle-stat-card span {
+  display: block;
+
+  color: #64748b;
+
+  font-size: 13px;
+
+  margin-bottom: 5px;
+}
+
+.vehicle-stat-card strong {
+  display: block;
+
+  color: #0f172a;
+
+  font-size: 24px;
+
+  font-weight: 800;
+}
+
+
+/* =====================================================
+   TOOLBAR
+===================================================== */
+
+.vehicles-toolbar {
+  background: white;
+
+  border: 1px solid #e8edf4;
+
+  border-radius: 15px;
+
+  padding: 15px;
+
+  margin-bottom: 22px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+.vehicle-search {
+  height: 43px;
+
+  width: 330px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 0 14px;
+
+  border: 1px solid #e2e8f0;
+
+  border-radius: 10px;
+
+  background: #f8fafc;
+
+  color: #94a3b8;
+}
+
+.vehicle-search input {
+  border: none;
+  outline: none;
+
+  width: 100%;
+
+  background: transparent;
+
+  font-size: 14px;
+
+  color: #0f172a;
+}
+
+.vehicle-filter {
+  display: flex;
+  gap: 7px;
+}
+
+.vehicle-filter button {
+  padding: 9px 14px;
+
+  border-radius: 9px;
+
+  background: #f1f5f9;
+
+  color: #64748b;
+
+  font-size: 13px;
+}
+
+.vehicle-filter button:hover {
+  transform: none;
+}
+
+.vehicle-filter button.active {
+  background: #2563eb;
+  color: white;
+}
+
+
+/* =====================================================
+   VEHICLE GRID
+===================================================== */
+
+.vehicle-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 20px;
+}
+
+
+/* =====================================================
+   VEHICLE CARD
+===================================================== */
+
+.vehicle-card {
+  background: white;
+
+  border: 1px solid #e8edf4;
+
+  border-radius: 18px;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 7px 22px rgba(15, 23, 42, 0.06);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.vehicle-card:hover {
+  transform: translateY(-4px);
+
+  box-shadow:
+    0 14px 30px rgba(15, 23, 42, 0.1);
+}
+
+
+/* =====================================================
+   CARD TOP
+===================================================== */
+
+.vehicle-card-top {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 18px 18px 5px;
+}
+
+.vehicle-image {
+  width: 62px;
+  height: 62px;
+
+  border-radius: 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #eef4ff;
+
+  color: #2563eb;
+
+  font-size: 28px;
+}
+
+.vehicle-card-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.vehicle-card-actions button {
+  width: 34px;
+  height: 34px;
+
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+
+  background: #f8fafc;
+
+  color: #64748b;
+
+  font-size: 13px;
+}
+
+.vehicle-card-actions button:hover {
+  background: #e8f0ff;
+  color: #2563eb;
+
+  transform: none;
+}
+
+.vehicle-card-actions .delete-action:hover {
+  background: #fff0f0;
+  color: #dc2626;
+}
+
+
+/* =====================================================
+   INFO
+===================================================== */
+
+.vehicle-info {
+  padding: 15px 18px;
+}
+
+.vehicle-info h2 {
+  margin: 0;
+
+  color: #0f172a;
+
+  font-size: 18px;
+
+  font-weight: 800;
+}
+
+.vehicle-number {
+  margin-top: 5px;
+
+  color: #2563eb;
+
+  font-size: 13px;
+
+  font-weight: 700;
+}
+
+.vehicle-details {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 12px;
+
+  margin-top: 18px;
+}
+
+.vehicle-details div {
+  background: #f8fafc;
+
+  border-radius: 10px;
+
+  padding: 10px;
+}
+
+.vehicle-details span {
+  display: block;
+
+  color: #94a3b8;
+
+  font-size: 11px;
+
+  margin-bottom: 4px;
+}
+
+.vehicle-details strong {
+  color: #334155;
+
+  font-size: 13px;
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.vehicle-card-footer {
+  border-top: 1px solid #eef2f7;
+
+  padding: 13px 18px;
+
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+}
+
+.vehicle-status {
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  font-size: 12px;
+
+  font-weight: 700;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: currentColor;
+}
+
+.vehicle-status.active {
+  color: #16a34a;
+}
+
+.vehicle-status.maintenance {
+  color: #ea580c;
+}
+
+.vehicle-status.inactive {
+  color: #dc2626;
+}
+
+.vehicle-year {
+  color: #94a3b8;
+
+  font-size: 12px;
+}
+
+
+/* =====================================================
+   EMPTY
+===================================================== */
+
+.vehicle-empty {
+  grid-column: 1 / -1;
+
+  background: white;
+
+  border: 1px solid #e8edf4;
+
+  border-radius: 18px;
+
+  padding: 65px 30px;
+
+  text-align: center;
+
+  box-shadow:
+    0 7px 22px rgba(15, 23, 42, 0.05);
+}
+
+.empty-icon {
+  width: 70px;
+  height: 70px;
+
+  margin: 0 auto 18px;
+
+  border-radius: 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #eef4ff;
+
+  color: #2563eb;
+
+  font-size: 28px;
+}
+
+.vehicle-empty h2 {
+  margin: 0;
+
+  color: #0f172a;
+
+  font-size: 20px;
+}
+
+.vehicle-empty p {
+  max-width: 430px;
+
+  margin: 8px auto 20px;
+
+  color: #64748b;
+
+  font-size: 14px;
+
+  line-height: 1.6;
+}
+
+.vehicle-empty button {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  background: #2563eb;
+
+  color: white;
+
+  padding: 11px 17px;
+
+  border-radius: 10px;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 1100px) {
+
+  .vehicle-grid {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+  .vehicle-stats {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+}
+
+
+@media (max-width: 700px) {
+
+  .vehicles-page {
+    padding: 18px;
+  }
+
+  .vehicles-header {
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    gap: 15px;
+  }
+
+  .add-vehicle-btn {
+    width: 100%;
+
+    justify-content: center;
+  }
+
+  .vehicles-toolbar {
+    align-items: stretch;
+
+    flex-direction: column;
+  }
+
+  .vehicle-search {
+    width: 100%;
+  }
+
+  .vehicle-filter {
+    overflow-x: auto;
+  }
+
+  .vehicle-filter button {
+    white-space: nowrap;
+  }
+
+  .vehicle-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .vehicle-stats {
+    grid-template-columns: 1fr;
+  }
+}

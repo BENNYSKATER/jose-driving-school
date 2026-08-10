@@ -1,146 +1,355 @@
-import { useParams } from "react-router-dom";
 import { useContext } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { StudentContext } from "../context/StudentContext";
-import { AttendanceContext } from "../context/AttendanceContext";
+import "../css/StudentProfile.css";
 
 function StudentProfile() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const { students } = useContext(StudentContext);
-const { attendance } = useContext(AttendanceContext);
-const student = students[id];
-const studentAttendance = attendance.filter(
-  (record) => record.student === student.name
-);
 
-console.log(student);
+  // IMPORTANT:
+  // Student ID is Date.now(), so DON'T use students[Number(id)]
+  const student = students.find(
+    (s) => String(s.id) === String(id)
+  );
 
-if (!student) {
-  return <h2>Student Not Found</h2>;
-}
+  // Student not found
+  if (!student) {
+    return (
+      <div className="profile-page">
+        <div className="profile-not-found">
+          <div>😕</div>
+
+          <h2>Student Not Found</h2>
+
+          <p>
+            The student you are looking for does not exist.
+          </p>
+
+          <Link to="/students">
+            ← Back to Students
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const fees = Number(student.fees || 0);
+  const paid = Number(student.paid || 0);
+
+  const balance =
+    student.balance !== undefined
+      ? Number(student.balance)
+      : Math.max(fees - paid, 0);
+
+  const isPaid =
+    balance <= 0 || student.status === "Paid";
+
+  const classesCompleted = Number(
+    student.practiceClasses ||
+      student.classesCompleted ||
+      0
+  );
 
   return (
-    <div
-      style={{
-        padding: "30px",
-        maxWidth: "700px",
-        margin: "auto",
-      }}
-    >
-      <h1>👨‍🎓 Student Profile</h1>
+    <div className="profile-page">
 
-      <hr />
+      {/* HEADER */}
+      <div className="profile-header">
 
-      <h2>{student.name}</h2>
+        <Link
+          to="/students"
+          className="back-btn"
+        >
+          ← Back to Students
+        </Link>
 
-      <p><b>📱 Mobile :</b> {student.mobile}</p>
+        <button
+          className="profile-edit-btn"
+          onClick={() =>
+            navigate(`/edit-student/${student.id}`)
+          }
+        >
+          ✏️ Edit Student
+        </button>
 
-      <p><b>🚗 Vehicle :</b> {student.vehicle}</p>
+      </div>
 
-      <p><b>💰 Total Fees :</b> ₹{student.fees}</p>
 
-      <p><b>💵 Paid :</b> ₹{student.paid || 0}</p>
+      {/* MAIN PROFILE */}
+      <div className="profile-main-card">
 
-      <p><b>💳 Balance :</b> ₹{student.balance || student.fees}</p>
+        <div className="profile-avatar">
 
-      <p>
-        <b>📌 Status :</b>{" "}
-        {student.status === "Paid" ? "✅ Paid" : "❌ Pending"}
-      </p>
+          {student.photo ? (
+            <img
+              src={student.photo}
+              alt={student.name}
+              style={{
+                width: "100%",
+                height: "100%",
+                borderRadius: "50%",
+                objectFit: "cover",
+              }}
+            />
+          ) : (
+            student.name
+              ? student.name.charAt(0).toUpperCase()
+              : "S"
+          )}
 
-      <p>
-        <b>🎯 Classes Completed :</b>{" "}
-        {student.classesCompleted || 0}
-      </p>
+        </div>
 
-      <hr />
+        <div className="profile-main-info">
 
-      <h2>📅 Attendance History</h2>
+          <h1>
+            {student.name || "Unknown Student"}
+          </h1>
 
-{studentAttendance.length === 0 ? (
-  <p>No Attendance Records</p>
-) : (
-  <table
-    border="1"
-    cellPadding="10"
-    style={{
-      width: "100%",
-      marginTop: "10px",
-    }}
-  >
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>Status</th>
-      </tr>
-    </thead>
+          <p>
+            📱 {student.mobile || "No mobile number"}
+          </p>
 
-    <tbody>
-      {studentAttendance.map((record, index) => (
-        <tr key={index}>
-          <td>{record.date}</td>
-          <td>
-            {record.status === "Present"
-              ? "✅ Present"
-              : "❌ Absent"}
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-)}
+          <span
+            className={
+              isPaid
+                ? "profile-status paid"
+                : "profile-status pending"
+            }
+          >
+            {isPaid
+              ? "✓ Fees Paid"
+              : "● Payment Pending"}
+          </span>
 
-      <hr />
+        </div>
 
-      <h2>💰 Payment History</h2>
+      </div>
 
-{student.paymentHistory &&
-student.paymentHistory.length > 0 ? (
 
-  <table
-    border="1"
-    cellPadding="10"
-    style={{
-      width: "100%",
-      marginTop: "10px",
-    }}
-  >
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>Amount</th>
-      </tr>
-    </thead>
+      {/* INFORMATION GRID */}
+      <div className="profile-grid">
 
-    <tbody>
-      {student.paymentHistory.map((payment, index) => (
-        <tr key={index}>
-          <td>{payment.date}</td>
-          <td>₹{payment.amount}</td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
 
-) : (
-  <p>No Payments Yet</p>
-)}
+        {/* PERSONAL INFORMATION */}
+        <div className="profile-card">
 
-      <hr />
+          <div className="profile-card-title">
 
-      <button
-        onClick={() => window.print()}
-        style={{
-          background: "#1976d2",
-          color: "white",
-          padding: "10px 20px",
-          border: "none",
-          borderRadius: "8px",
-          cursor: "pointer",
-        }}
-      >
-        🖨 Print Student Details
-      </button>
+            <span>👤</span>
+
+            <div>
+              <h2>Personal Information</h2>
+              <p>Student basic details</p>
+            </div>
+
+          </div>
+
+          <div className="profile-details">
+
+            <div>
+              <label>Student Name</label>
+              <strong>
+                {student.name || "-"}
+              </strong>
+            </div>
+
+            <div>
+              <label>Mobile Number</label>
+              <strong>
+                {student.mobile || "-"}
+              </strong>
+            </div>
+
+            <div>
+              <label>Vehicle</label>
+              <strong>
+                🚗 {student.vehicle || "-"}
+              </strong>
+            </div>
+
+            <div>
+              <label>License Type</label>
+              <strong>
+                {student.licenseType || "-"}
+              </strong>
+            </div>
+
+            <div>
+              <label>Joining Date</label>
+              <strong>
+                {student.joiningDate || "-"}
+              </strong>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        {/* PAYMENT INFORMATION */}
+        <div className="profile-card">
+
+          <div className="profile-card-title">
+
+            <span>💰</span>
+
+            <div>
+              <h2>Payment Information</h2>
+              <p>Fees and payment status</p>
+            </div>
+
+          </div>
+
+          <div className="payment-details">
+
+            <div>
+              <span>Total Fees</span>
+              <strong>
+                ₹{fees}
+              </strong>
+            </div>
+
+            <div className="payment-paid">
+              <span>Total Paid</span>
+              <strong>
+                ₹{paid}
+              </strong>
+            </div>
+
+            <div className="payment-balance">
+              <span>Balance</span>
+              <strong>
+                ₹{balance}
+              </strong>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        {/* PRACTICE INFORMATION */}
+        <div className="profile-card">
+
+          <div className="profile-card-title">
+
+            <span>🚗</span>
+
+            <div>
+              <h2>Practice Information</h2>
+              <p>Driving practice progress</p>
+            </div>
+
+          </div>
+
+          <div className="practice-info">
+
+            <div className="practice-number">
+
+              <strong>
+                {classesCompleted}
+              </strong>
+
+              <span>
+                Classes Completed
+              </span>
+
+            </div>
+
+            <div className="practice-progress">
+
+              <div className="progress-bar">
+
+                <div
+                  style={{
+                    width: `${Math.min(
+                      classesCompleted * 8.33,
+                      100
+                    )}%`,
+                  }}
+                />
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        {/* PAYMENT HISTORY */}
+        <div className="profile-card">
+
+          <div className="profile-card-title">
+
+            <span>📜</span>
+
+            <div>
+              <h2>Payment History</h2>
+              <p>Recent payments</p>
+            </div>
+
+          </div>
+
+          {student.paymentHistory &&
+          student.paymentHistory.length > 0 ? (
+
+            <div className="payment-history">
+
+              {student.paymentHistory
+                .slice()
+                .reverse()
+                .map((payment, index) => (
+
+                  <div
+                    className="history-row"
+                    key={index}
+                  >
+
+                    <div>
+
+                      <strong>
+                        ₹{Number(payment.amount || 0)}
+                      </strong>
+
+                      <span>
+                        Payment received
+                      </span>
+
+                    </div>
+
+                    <small>
+                      {payment.date}
+                    </small>
+
+                  </div>
+
+                ))}
+
+            </div>
+
+          ) : (
+
+            <div className="empty-history">
+
+              💳
+
+              <p>
+                No payment history
+              </p>
+
+            </div>
+
+          )}
+
+        </div>
+
+      </div>
+
     </div>
   );
 }
