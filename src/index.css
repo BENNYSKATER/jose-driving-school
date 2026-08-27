@@ -1,417 +1,351 @@
-/* =====================================================
-   JOSE DRIVING SCHOOL - GLOBAL CSS
-===================================================== */
+/* =========================================
+   JDS PREMIUM LIQUID GLASS
+   GRAPHITE + CYAN + AMBER
+========================================= */
+
+:root {
+  /* ===== PREMIUM SURFACES ===== */
+
+  --page-bg: #090d14;
+
+  --surface: #101722;
+  --surface-2: #151e2b;
+
+  --glass-bg: rgba(19, 28, 40, 0.72);
+  --glass-bg-strong: rgba(24, 34, 48, 0.88);
+
+  --glass-border: rgba(255, 255, 255, 0.10);
+
+  --glass-highlight: rgba(255, 255, 255, 0.07);
+
+  --glass-shadow:
+    0 20px 55px rgba(0, 0, 0, 0.35);
+
+
+  /* ===== TEXT ===== */
+
+  --text-primary: #f5f7fa;
+
+  --text-secondary: #9aa7b8;
+
+  --text-muted: #687587;
+
+
+  /* ===== PREMIUM ACCENTS ===== */
+
+  --cyan: #00c2ff;
+
+  --cyan-light: #55dcff;
+
+  --amber: #ffb547;
+
+  --amber-light: #ffd27a;
+
+  --coral: #ff5c7a;
+
+  --green: #2dd4a8;
+
+
+  /* ===== COMMON ===== */
+
+  --blue: #00c2ff;
+
+  --blue-light: #55dcff;
+
+  --danger: #ff5c7a;
+
+  --success: #2dd4a8;
+
+  --warning: #ffb547;
+}
+
+
+/* =========================================
+   RESET
+========================================= */
 
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
 }
 
-html {
-  scroll-behavior: smooth;
+
+html,
+body,
+#root {
+  margin: 0;
+
+  min-height: 100%;
+
+  width: 100%;
+
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
 }
+
+
+/* =========================================
+   BODY
+========================================= */
 
 body {
-  margin: 0;
-  font-family: "Inter", "Segoe UI", Arial, sans-serif;
-  background: #f4f7fb;
-  color: #1e293b;
-}
-
-/* =====================================================
-   LOGIN PAGE
-===================================================== */
-
-.login-container {
-  min-height: 100vh;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 30px;
+  color: var(--text-primary);
 
   background:
     radial-gradient(
-      circle at 15% 20%,
-      rgba(37, 99, 235, 0.18),
-      transparent 35%
+      circle at 8% 5%,
+      rgba(0, 194, 255, 0.13),
+      transparent 28%
     ),
+
     radial-gradient(
-      circle at 85% 80%,
-      rgba(14, 165, 233, 0.16),
-      transparent 35%
+      circle at 92% 8%,
+      rgba(255, 181, 71, 0.09),
+      transparent 25%
     ),
+
+    radial-gradient(
+      circle at 80% 85%,
+      rgba(255, 92, 122, 0.06),
+      transparent 30%
+    ),
+
+    radial-gradient(
+      circle at 20% 90%,
+      rgba(45, 212, 168, 0.05),
+      transparent 30%
+    ),
+
+    var(--page-bg);
+
+  background-attachment: fixed;
+
+  overflow-x: hidden;
+}
+
+
+/* =========================================
+   PREMIUM GLASS
+========================================= */
+
+.glass {
+  background:
     linear-gradient(
       135deg,
-      #eef4ff 0%,
-      #f8fafc 50%,
-      #edf6ff 100%
+      rgba(255, 255, 255, 0.075),
+      rgba(255, 255, 255, 0.025)
+    ),
+    var(--glass-bg);
+
+  backdrop-filter:
+    blur(24px)
+    saturate(150%);
+
+  -webkit-backdrop-filter:
+    blur(24px)
+    saturate(150%);
+
+  border:
+    1px solid var(--glass-border);
+
+  box-shadow:
+    var(--glass-shadow);
+
+  position: relative;
+
+  overflow: hidden;
+}
+
+
+/* Glass reflection */
+
+.glass::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.20),
+      transparent
     );
+
+  pointer-events: none;
 }
 
-/* =====================================================
-   LOGIN CARD
-===================================================== */
 
-.login-box {
-  width: 100%;
-  max-width: 430px;
-
-  background: rgba(255, 255, 255, 0.96);
-
-  padding: 42px 40px;
-
-  border-radius: 24px;
-
-  text-align: center;
-
-  border: 1px solid rgba(255, 255, 255, 0.8);
-
-  box-shadow:
-    0 25px 60px rgba(15, 23, 42, 0.14),
-    0 8px 25px rgba(37, 99, 235, 0.08);
-
-  backdrop-filter: blur(12px);
-
-  animation: loginCard 0.5s ease;
-}
-
-@keyframes loginCard {
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.98);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-/* =====================================================
-   LOGIN LOGO
-===================================================== */
-
-.login-box .logo {
-  width: 82px;
-  height: 82px;
-
-  margin: 0 auto 18px;
-
-  border-radius: 22px;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  font-size: 42px;
-
-  background: linear-gradient(
-    135deg,
-    #2563eb,
-    #1d4ed8
-  );
-
-  box-shadow:
-    0 12px 25px rgba(37, 99, 235, 0.28);
-
-  transform: rotate(-2deg);
-}
-
-/* =====================================================
-   LOGIN TITLE
-===================================================== */
-
-.login-box h1 {
-  margin: 0;
-
-  color: #0f172a;
-
-  font-size: 30px;
-
-  font-weight: 800;
-
-  letter-spacing: -0.5px;
-}
-
-/* =====================================================
-   LOGIN SUBTITLE
-===================================================== */
-
-.login-box p {
-  margin-top: 8px;
-  margin-bottom: 30px;
-
-  color: #64748b;
-
-  font-size: 15px;
-
-  font-weight: 500;
-}
-
-/* =====================================================
-   LOGIN INPUTS
-===================================================== */
-
-.login-box input {
-  width: 100%;
-
-  height: 50px;
-
-  padding: 0 16px;
-
-  margin: 9px 0;
-
-  background: #f8fafc;
-
-  color: #0f172a;
-
-  border: 1px solid #e2e8f0;
-
-  border-radius: 12px;
-
-  outline: none;
-
-  font-size: 15px;
-
-  transition:
-    border-color 0.25s ease,
-    box-shadow 0.25s ease,
-    background 0.25s ease;
-}
-
-.login-box input::placeholder {
-  color: #94a3b8;
-}
-
-.login-box input:focus {
-  background: #ffffff;
-
-  border-color: #2563eb;
-
-  box-shadow:
-    0 0 0 4px rgba(37, 99, 235, 0.1);
-}
-
-/* =====================================================
-   LOGIN BUTTON
-===================================================== */
-
-.login-box button {
-  width: 100%;
-
-  height: 50px;
-
-  margin-top: 12px;
-
-  border: none;
-
-  border-radius: 12px;
-
-  background: linear-gradient(
-    135deg,
-    #2563eb,
-    #1d4ed8
-  );
-
-  color: #ffffff;
-
-  font-size: 16px;
-
-  font-weight: 700;
-
-  cursor: pointer;
-
-  box-shadow:
-    0 10px 20px rgba(37, 99, 235, 0.22);
-
-  transition:
-    transform 0.25s ease,
-    box-shadow 0.25s ease,
-    background 0.25s ease;
-}
-
-.login-box button:hover {
-  background: linear-gradient(
-    135deg,
-    #1d4ed8,
-    #1e40af
-  );
-
-  transform: translateY(-2px);
-
-  box-shadow:
-    0 14px 28px rgba(37, 99, 235, 0.28);
-}
-
-.login-box button:active {
-  transform: translateY(0);
-}
-
-/* =====================================================
-   LOGIN LINK
-===================================================== */
-
-.login-box a {
-  display: inline-block;
-
-  margin-top: 22px;
-
-  color: #2563eb !important;
-
-  font-weight: 700;
-
-  transition: 0.2s ease;
-}
-
-.login-box a:hover {
-  color: #1d4ed8 !important;
-}
-
-/* =====================================================
-   GLOBAL BUTTONS
-===================================================== */
+/* =========================================
+   BUTTON
+========================================= */
 
 button {
-  border: none;
-
-  border-radius: 9px;
-
-  padding: 10px 16px;
-
-  cursor: pointer;
-
   font-family: inherit;
-
-  font-weight: 600;
 
   transition:
     transform 0.2s ease,
-    box-shadow 0.2s ease;
+    box-shadow 0.2s ease,
+    background 0.2s ease;
 }
+
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+
+/* =========================================
+   COMMON PREMIUM BUTTON EFFECT
+========================================= */
 
 button:hover {
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 }
 
-/* =====================================================
-   GLOBAL INPUTS
-===================================================== */
+
+button:active {
+  transform: scale(0.98);
+}
+
+
+/* =========================================
+   INPUT
+========================================= */
 
 input,
 select,
 textarea {
   font-family: inherit;
+
+  color: var(--text-primary);
+}
+
+
+input:focus,
+select:focus,
+textarea:focus {
   outline: none;
 }
 
-/* =====================================================
-   TABLES
-===================================================== */
 
-table {
-  width: 100%;
+/* Dark select dropdown */
 
-  border-collapse: collapse;
+select option {
+  background: #101722;
 
-  background: #ffffff;
-
-  border-radius: 14px;
-
-  overflow: hidden;
-
-  box-shadow:
-    0 6px 18px rgba(15, 23, 42, 0.07);
+  color: #f5f7fa;
 }
 
-th {
-  background: #2563eb;
+
+/* =========================================
+   SCROLLBAR
+========================================= */
+
+::-webkit-scrollbar {
+  width: 7px;
+
+  height: 7px;
+}
+
+
+::-webkit-scrollbar-track {
+  background:
+    rgba(255, 255, 255, 0.02);
+}
+
+
+::-webkit-scrollbar-thumb {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0, 194, 255, 0.55),
+      rgba(255, 181, 71, 0.45)
+    );
+
+  border-radius: 20px;
+}
+
+
+::-webkit-scrollbar-thumb:hover {
+  background:
+    linear-gradient(
+      180deg,
+      #00c2ff,
+      #ffb547
+    );
+}
+
+
+/* =========================================
+   SELECTION
+========================================= */
+
+::selection {
+  background:
+    rgba(0, 194, 255, 0.25);
 
   color: #ffffff;
-
-  padding: 14px;
-
-  text-align: left;
-
-  font-size: 14px;
-
-  font-weight: 700;
 }
 
-td {
-  padding: 14px;
 
-  border-bottom: 1px solid #eef2f7;
-
-  color: #334155;
-
-  font-size: 14px;
-}
-
-tr:hover {
-  background: #f8fbff;
-}
-
-/* =====================================================
-   HEADINGS
-===================================================== */
-
-h1,
-h2,
-h3 {
-  color: #1e293b;
-}
-
-/* =====================================================
+/* =========================================
    LINKS
-===================================================== */
+========================================= */
 
 a {
-  color: #2563eb;
+  color: inherit;
 
   text-decoration: none;
 }
 
-a:hover {
-  color: #1d4ed8;
+
+/* =========================================
+   PREMIUM GLOW UTILITIES
+========================================= */
+
+.glow-cyan {
+  box-shadow:
+    0 0 25px rgba(0, 194, 255, 0.18);
 }
 
-/* =====================================================
-   RESPONSIVE LOGIN
-===================================================== */
 
-@media (max-width: 600px) {
-  .login-container {
-    padding: 20px;
-  }
-
-  .login-box {
-    max-width: 100%;
-
-    padding: 34px 24px;
-
-    border-radius: 20px;
-  }
-
-  .login-box h1 {
-    font-size: 25px;
-  }
-
-  .login-box .logo {
-    width: 72px;
-    height: 72px;
-
-    font-size: 36px;
-  }
+.glow-amber {
+  box-shadow:
+    0 0 25px rgba(255, 181, 71, 0.18);
 }
 
-@media (max-width: 380px) {
-  .login-box {
-    padding: 28px 18px;
+
+.glow-coral {
+  box-shadow:
+    0 0 25px rgba(255, 92, 122, 0.18);
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 700px) {
+
+  body {
+    background:
+      radial-gradient(
+        circle at 50% 0%,
+        rgba(0, 194, 255, 0.12),
+        transparent 35%
+      ),
+      var(--page-bg);
   }
 
-  .login-box h1 {
-    font-size: 22px;
-  }
 }

@@ -1,35 +1,85 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useEffect, useState } from "react";
 
 export const AttendanceContext = createContext();
 
 export function AttendanceProvider({ children }) {
-  const [attendance, setAttendance] = useState(() => {
-    const saved = localStorage.getItem("attendance");
-    return saved ? JSON.parse(saved) : [];
+  const [attendances, setAttendances] = useState(() => {
+    try {
+      const saved = localStorage.getItem("jds_attendances");
+
+      if (!saved) {
+        return [];
+      }
+
+      const parsed = JSON.parse(saved);
+
+      if (!Array.isArray(parsed)) {
+        return [];
+      }
+
+      return parsed;
+    } catch (error) {
+      console.error("Attendance loading error:", error);
+      return [];
+    }
   });
 
-  const addAttendance = (record) => {
-    setAttendance((prev) => [...prev, record]);
-  };
-
-  const deleteAttendance = (index) => {
-    setAttendance((prev) =>
-      prev.filter((_, i) => i !== index)
-    );
-  };
-
+  // SAVE TO LOCAL STORAGE
   useEffect(() => {
     localStorage.setItem(
-      "attendance",
-      JSON.stringify(attendance)
+      "jds_attendances",
+      JSON.stringify(attendances)
     );
-  }, [attendance]);
+  }, [attendances]);
+
+  // ADD ATTENDANCE
+  const addAttendance = (attendance) => {
+    const newAttendance = {
+      ...attendance,
+      id:
+        attendance.id ||
+        `attendance-${Date.now()}-${Math.random()
+          .toString(36)
+          .substring(2, 8)}`,
+    };
+
+    setAttendances((prev) => [
+      ...prev,
+      newAttendance,
+    ]);
+  };
+
+  // UPDATE ATTENDANCE
+  const updateAttendance = (id, updatedData) => {
+    setAttendances((prev) =>
+      prev.map((item) =>
+        String(item.id) === String(id)
+          ? {
+              ...item,
+              ...updatedData,
+              id: item.id,
+            }
+          : item
+      )
+    );
+  };
+
+  // DELETE ATTENDANCE
+  const deleteAttendance = (id) => {
+    setAttendances((prev) =>
+      prev.filter(
+        (item) =>
+          String(item.id) !== String(id)
+      )
+    );
+  };
 
   return (
     <AttendanceContext.Provider
       value={{
-        attendance,
+        attendances,
         addAttendance,
+        updateAttendance,
         deleteAttendance,
       }}
     >

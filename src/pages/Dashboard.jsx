@@ -1,716 +1,510 @@
-import Sidebar from "../components/Sidebar";
-import "../css/Sidebar.css";
-import { useContext, useState } from "react";
-import { motion } from "framer-motion";
-
+import { useContext } from "react";
 import {
   FaUserGraduate,
   FaCarSide,
-  FaChalkboardTeacher,
+  FaUserTie,
   FaMoneyBillWave,
   FaCalendarAlt,
-  FaCheckCircle,
-  FaTimesCircle,
-  FaBell,
+  FaClipboardCheck,
+  FaArrowUp,
+  FaArrowRight,
 } from "react-icons/fa";
 
-import {
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-} from "recharts";
+import { Link } from "react-router-dom";
 
 import { StudentContext } from "../context/StudentContext";
 import { VehicleContext } from "../context/VehicleContext";
 import { InstructorContext } from "../context/InstructorContext";
 import { ScheduleContext } from "../context/ScheduleContext";
 import { AttendanceContext } from "../context/AttendanceContext";
-import { SettingsContext } from "../context/SettingsContext";
-
-import { getNotifications } from "../utils/notifications";
 
 import "../css/Dashboard.css";
-
-
-const DashboardCard = ({ title, value, icon, color }) => {
-  return (
-    <motion.div
-      whileHover={{
-        y: -5,
-        boxShadow: "0 18px 35px rgba(15, 23, 42, 0.12)",
-      }}
-      transition={{ duration: 0.2 }}
-      style={{
-        background: "#ffffff",
-        borderRadius: "18px",
-        padding: "24px",
-        minHeight: "135px",
-        boxShadow: "0 8px 24px rgba(15, 23, 42, 0.07)",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        border: "1px solid #eef2f7",
-        cursor: "pointer",
-      }}
-    >
-      <div>
-        <p
-          style={{
-            margin: 0,
-            color: "#64748b",
-            fontSize: "15px",
-            fontWeight: "600",
-          }}
-        >
-          {title}
-        </p>
-
-        <h2
-          style={{
-            margin: "10px 0 0",
-            color: "#0f172a",
-            fontWeight: "800",
-            fontSize: "32px",
-          }}
-        >
-          {value}
-        </h2>
-      </div>
-
-      <div
-        style={{
-          width: "58px",
-          height: "58px",
-          borderRadius: "16px",
-          background: color,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          color: "#ffffff",
-          fontSize: "24px",
-          boxShadow: `0 8px 18px ${color}45`,
-        }}
-      >
-        {icon}
-      </div>
-    </motion.div>
-  );
-};
-
+import Sidebar from "../components/Sidebar";
 
 function Dashboard() {
-  const { students } = useContext(StudentContext);
-  const { vehicles } = useContext(VehicleContext);
-  const { instructors } = useContext(InstructorContext);
-  const { schedules } = useContext(ScheduleContext);
-  const { attendance } = useContext(AttendanceContext);
-  const { settings } = useContext(SettingsContext);
+  const { students = [] } = useContext(StudentContext);
+  const { vehicles = [] } = useContext(VehicleContext);
+  const { instructors = [] } = useContext(InstructorContext);
+  const { schedules = [] } = useContext(ScheduleContext);
+  const { attendance = [] } = useContext(AttendanceContext);
 
-  const [showNotifications, setShowNotifications] = useState(false);
-
-  const totalPendingFees = students.reduce(
-    (total, student) => total + Number(student.balance || 0),
+  const totalFees = students.reduce(
+    (sum, student) =>
+      sum + Number(student.fees || 0),
     0
   );
 
-  const today = new Date().toISOString().split("T")[0];
+  const collectedFees = students.reduce(
+    (sum, student) =>
+      sum + Number(student.paid || 0),
+    0
+  );
 
-  const presentToday = attendance.filter(
-    (a) => a.date === today && a.status === "Present"
+  const pendingFees = students.reduce(
+    (sum, student) =>
+      sum + Number(student.balance || 0),
+    0
+  );
+
+  const present = attendance.filter(
+    (item) => item.status === "Present"
   ).length;
 
-  const absentToday = attendance.filter(
-    (a) => a.date === today && a.status === "Absent"
+  const paidStudents = students.filter(
+    (student) => student.status === "Paid"
   ).length;
 
-  const todayClasses = schedules.filter(
-    (schedule) => schedule.date === today
-  ).length;
-
-  const chartData = [
+  const stats = [
     {
-      name: "Present",
-      value: presentToday,
+      title: "Total Students",
+      value: students.length,
+      icon: <FaUserGraduate />,
+      className: "cyan",
+      link: "/students",
     },
     {
-      name: "Absent",
-      value: absentToday,
+      title: "Vehicles",
+      value: vehicles.length,
+      icon: <FaCarSide />,
+      className: "amber",
+      link: "/vehicles",
+    },
+    {
+      title: "Instructors",
+      value: instructors.length,
+      icon: <FaUserTie />,
+      className: "green",
+      link: "/instructors",
+    },
+    {
+      title: "Schedules",
+      value: schedules.length,
+      icon: <FaCalendarAlt />,
+      className: "coral",
+      link: "/schedule",
     },
   ];
 
-  const COLORS = ["#22c55e", "#ef4444"];
-
-  const notifications = getNotifications(
-    students,
-    schedules,
-    vehicles
-  );
-
   return (
-    <div
-      style={{
-        display: "flex",
-        minHeight: "100vh",
-        background: "#f4f7fb",
-      }}
-    >
-      <Sidebar />
+  <>
+    <Sidebar />
 
-      <main
-        style={{
-          flex: 1,
-          padding: "28px",
-          background: "#f4f7fb",
-          minWidth: 0,
-        }}
-      >
+    <div className="dashboard-page">
 
-        {/* ================= TOPBAR ================= */}
+      {/* =====================================
+          HEADER
+      ===================================== */}
 
-        <div
-          style={{
-            background: "#ffffff",
-            borderRadius: "20px",
-            padding: "22px 26px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: "20px",
-            boxShadow: "0 8px 24px rgba(15, 23, 42, 0.06)",
-            border: "1px solid #eef2f7",
-          }}
-        >
+      <div className="dashboard-header">
 
-          {/* School information */}
+        <div>
+          <span className="dashboard-small-title">
+            JOSE DRIVING SCHOOL
+          </span>
 
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "15px",
-            }}
-          >
-            {settings.logo ? (
-              <img
-                src={settings.logo}
-                alt="School Logo"
-                style={{
-                  width: "58px",
-                  height: "58px",
-                  borderRadius: "16px",
-                  objectFit: "cover",
-                  border: "1px solid #e2e8f0",
-                }}
-              />
-            ) : (
-              <div
-                style={{
-                  width: "58px",
-                  height: "58px",
-                  borderRadius: "16px",
-                  background: "#eff6ff",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "28px",
-                }}
-              >
-                🚗
-              </div>
-            )}
-
-            <div>
-              <h2
-                style={{
-                  margin: 0,
-                  color: "#0f172a",
-                  fontSize: "25px",
-                  fontWeight: "800",
-                }}
-              >
-                {settings.schoolName || "Jose Driving School"}
-              </h2>
-
-              <p
-                style={{
-                  margin: "5px 0 0",
-                  color: "#64748b",
-                  fontSize: "14px",
-                }}
-              >
-                Driving School Management System
-              </p>
-            </div>
-          </div>
-
-
-          {/* Right side */}
-
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "18px",
-            }}
-          >
-
-            {/* Search */}
-
-            <div
-              style={{
-                width: "220px",
-                height: "44px",
-                background: "#f8fafc",
-                border: "1px solid #e2e8f0",
-                borderRadius: "12px",
-                display: "flex",
-                alignItems: "center",
-                padding: "0 14px",
-              }}
-            >
-              <span style={{ marginRight: "8px" }}>🔍</span>
-
-              <input
-                type="text"
-                placeholder="Search..."
-                style={{
-                  border: "none",
-                  outline: "none",
-                  background: "transparent",
-                  width: "100%",
-                  fontSize: "14px",
-                  padding: 0,
-                }}
-              />
-            </div>
-
-
-            {/* Notification */}
-
-            <div
-              style={{
-                position: "relative",
-              }}
-            >
-              <button
-                onClick={() =>
-                  setShowNotifications(!showNotifications)
-                }
-                style={{
-                  width: "44px",
-                  height: "44px",
-                  borderRadius: "12px",
-                  border: "1px solid #e2e8f0",
-                  background: "#ffffff",
-                  color: "#475569",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "18px",
-                  cursor: "pointer",
-                  padding: 0,
-                }}
-              >
-                <FaBell />
-              </button>
-
-              {notifications.length > 0 && (
-                <span
-                  style={{
-                    position: "absolute",
-                    top: "-6px",
-                    right: "-6px",
-                    background: "#ef4444",
-                    color: "#ffffff",
-                    width: "20px",
-                    height: "20px",
-                    borderRadius: "50%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "11px",
-                    fontWeight: "800",
-                    border: "2px solid #ffffff",
-                  }}
-                >
-                  {notifications.length}
-                </span>
-              )}
-
-              {showNotifications && (
-                <div
-                  onClick={(e) => e.stopPropagation()}
-                  style={{
-                    position: "absolute",
-                    top: "54px",
-                    right: 0,
-                    width: "340px",
-                    background: "#ffffff",
-                    borderRadius: "16px",
-                    boxShadow: "0 18px 45px rgba(15,23,42,0.18)",
-                    padding: "18px",
-                    zIndex: 1000,
-                    border: "1px solid #e2e8f0",
-                  }}
-                >
-                  <h3
-                    style={{
-                      margin: "0 0 14px",
-                      color: "#0f172a",
-                      fontSize: "17px",
-                    }}
-                  >
-                    🔔 Notifications
-                  </h3>
-
-                  {notifications.length === 0 ? (
-                    <p
-                      style={{
-                        color: "#64748b",
-                        margin: 0,
-                      }}
-                    >
-                      No new notifications 🎉
-                    </p>
-                  ) : (
-                    notifications.map((notification, index) => (
-                      <div
-                        key={index}
-                        style={{
-                          padding: "12px",
-                          marginBottom: "8px",
-                          background: "#f8fafc",
-                          borderRadius: "10px",
-                          borderLeft: `4px solid ${
-                            notification.type === "fee"
-                              ? "#ef4444"
-                              : notification.type === "schedule"
-                              ? "#2563eb"
-                              : "#f59e0b"
-                          }`,
-                          fontSize: "13px",
-                          fontWeight: "600",
-                          color: "#334155",
-                        }}
-                      >
-                        {notification.type === "fee" && "💰 "}
-                        {notification.type === "schedule" && "📅 "}
-                        {notification.type === "vehicle" && "🚗 "}
-                        {notification.message}
-                      </div>
-                    ))
-                  )}
-                </div>
-              )}
-            </div>
-
-
-            {/* Admin */}
-
-            <div
-              style={{
-                background: "#2563eb",
-                color: "#ffffff",
-                borderRadius: "14px",
-                padding: "10px 18px",
-                display: "flex",
-                alignItems: "center",
-                gap: "9px",
-                fontWeight: "700",
-                minWidth: "105px",
-                justifyContent: "center",
-              }}
-            >
-              👤 Admin
-            </div>
-
-          </div>
-        </div>
-
-
-        {/* ================= PAGE TITLE ================= */}
-
-        <div
-          style={{
-            marginTop: "28px",
-            marginBottom: "18px",
-          }}
-        >
-          <h1
-            style={{
-              margin: 0,
-              color: "#0f172a",
-              fontSize: "26px",
-              fontWeight: "800",
-            }}
-          >
+          <h1>
             Dashboard
           </h1>
 
-          <p
-            style={{
-              margin: "5px 0 0",
-              color: "#64748b",
-              fontSize: "14px",
-            }}
-          >
-            Here's what's happening in your driving school today.
+          <p>
+            Welcome back. Here's what's happening
+            with your driving school.
           </p>
         </div>
 
+        <div className="dashboard-status">
+          <span className="status-dot"></span>
 
-        {/* ================= DASHBOARD CARDS ================= */}
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns:
-              "repeat(auto-fit, minmax(220px, 1fr))",
-            gap: "18px",
-          }}
-        >
-          <DashboardCard
-            title="Students"
-            value={students.length}
-            icon={<FaUserGraduate />}
-            color="#2563eb"
-          />
-
-          <DashboardCard
-            title="Vehicles"
-            value={vehicles.length}
-            icon={<FaCarSide />}
-            color="#22c55e"
-          />
-
-          <DashboardCard
-            title="Instructors"
-            value={instructors.length}
-            icon={<FaChalkboardTeacher />}
-            color="#f59e0b"
-          />
-
-          <DashboardCard
-            title="Pending Fees"
-            value={`₹${totalPendingFees}`}
-            icon={<FaMoneyBillWave />}
-            color="#ef4444"
-          />
-
-          <DashboardCard
-            title="Today's Classes"
-            value={todayClasses}
-            icon={<FaCalendarAlt />}
-            color="#06b6d4"
-          />
-
-          <DashboardCard
-            title="Present Today"
-            value={presentToday}
-            icon={<FaCheckCircle />}
-            color="#22c55e"
-          />
-
-          <DashboardCard
-            title="Absent Today"
-            value={absentToday}
-            icon={<FaTimesCircle />}
-            color="#ef4444"
-          />
-
-          <DashboardCard
-            title="RTO Tests"
-            value={0}
-            icon={<FaCalendarAlt />}
-            color="#8b5cf6"
-          />
+          System Online
         </div>
 
+      </div>
 
-        {/* ================= BOTTOM SECTION ================= */}
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns:
-              "minmax(0, 1.4fr) minmax(280px, 0.6fr)",
-            gap: "20px",
-            marginTop: "24px",
-          }}
-        >
+      {/* =====================================
+          STAT CARDS
+      ===================================== */}
 
-          {/* Attendance */}
+      <div className="dashboard-stats">
 
-          <div
-            style={{
-              background: "#ffffff",
-              borderRadius: "18px",
-              padding: "22px",
-              boxShadow: "0 8px 24px rgba(15, 23, 42, 0.06)",
-              border: "1px solid #eef2f7",
-              minHeight: "350px",
-            }}
+        {stats.map((stat) => (
+          <Link
+            to={stat.link}
+            className={`dashboard-stat-card ${stat.className}`}
+            key={stat.title}
           >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "10px",
-              }}
-            >
-              <div>
-                <h2
-                  style={{
-                    margin: 0,
-                    color: "#0f172a",
-                    fontSize: "19px",
-                    fontWeight: "800",
-                  }}
-                >
-                  📊 Attendance Overview
-                </h2>
 
-                <p
-                  style={{
-                    margin: "5px 0 0",
-                    color: "#64748b",
-                    fontSize: "13px",
-                  }}
-                >
-                  Today's student attendance
-                </p>
+            <div className="stat-top">
+
+              <div className="stat-icon">
+                {stat.icon}
               </div>
+
+              <FaArrowRight className="stat-arrow" />
+
             </div>
 
-            <div
-              style={{
-                width: "100%",
-                height: "270px",
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
-              {presentToday === 0 && absentToday === 0 ? (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    color: "#94a3b8",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: "42px",
-                      marginBottom: "10px",
-                    }}
-                  >
-                    📊
-                  </div>
-
-                  <p
-                    style={{
-                      margin: 0,
-                      fontWeight: "600",
-                    }}
-                  >
-                    No attendance recorded today
-                  </p>
-                </div>
-              ) : (
-                <ResponsiveContainer>
-                  <PieChart>
-                    <Pie
-                      data={chartData}
-                      dataKey="value"
-                      nameKey="name"
-                      outerRadius={95}
-                      innerRadius={55}
-                      paddingAngle={4}
-                      label
-                    >
-                      {chartData.map((entry, index) => (
-                        <Cell
-                          key={index}
-                          fill={COLORS[index]}
-                        />
-                      ))}
-                    </Pie>
-
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              )}
+            <div className="stat-value">
+              {stat.value}
             </div>
+
+            <div className="stat-title">
+              {stat.title}
+            </div>
+
+            <div className="stat-bottom">
+              <FaArrowUp />
+              Active records
+            </div>
+
+          </Link>
+        ))}
+
+      </div>
+
+
+      {/* =====================================
+          FINANCE SECTION
+      ===================================== */}
+
+      <div className="dashboard-section-title">
+        <div>
+          <span>FINANCIAL OVERVIEW</span>
+          <h2>Fee Summary</h2>
+        </div>
+      </div>
+
+
+      <div className="finance-grid">
+
+        {/* TOTAL */}
+
+        <div className="finance-card cyan">
+
+          <div className="finance-icon">
+            <FaMoneyBillWave />
           </div>
 
+          <div className="finance-info">
+            <span>Total Fees</span>
 
-          {/* Quick Actions */}
+            <strong>
+              ₹{totalFees.toLocaleString("en-IN")}
+            </strong>
 
-          <div
-            style={{
-              background: "#ffffff",
-              borderRadius: "18px",
-              padding: "22px",
-              boxShadow: "0 8px 24px rgba(15, 23, 42, 0.06)",
-              border: "1px solid #eef2f7",
-            }}
-          >
-            <h2
-              style={{
-                margin: 0,
-                color: "#0f172a",
-                fontSize: "19px",
-                fontWeight: "800",
-              }}
-            >
-              ⚡ Quick Actions
-            </h2>
-
-            <p
-              style={{
-                margin: "5px 0 18px",
-                color: "#64748b",
-                fontSize: "13px",
-              }}
-            >
-              Frequently used actions
-            </p>
-
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr",
-                gap: "12px",
-              }}
-            >
-              <button className="quick-btn">
-                ➕ Add Student
-              </button>
-
-              <button className="quick-btn">
-                🚗 Add Vehicle
-              </button>
-
-              <button className="quick-btn">
-                📅 Schedule Class
-              </button>
-
-              <button className="quick-btn">
-                📊 View Reports
-              </button>
-            </div>
+            <small>
+              Overall student fees
+            </small>
           </div>
 
         </div>
 
-      </main>
-    </div>
+
+        {/* COLLECTED */}
+
+        <div className="finance-card green">
+
+          <div className="finance-icon">
+            <FaMoneyBillWave />
+          </div>
+
+          <div className="finance-info">
+            <span>Collected</span>
+
+            <strong>
+              ₹{collectedFees.toLocaleString("en-IN")}
+            </strong>
+
+            <small>
+              Payments received
+            </small>
+          </div>
+
+        </div>
+
+
+        {/* PENDING */}
+
+        <div className="finance-card coral">
+
+          <div className="finance-icon">
+            <FaMoneyBillWave />
+          </div>
+
+          <div className="finance-info">
+            <span>Pending</span>
+
+            <strong>
+              ₹{pendingFees.toLocaleString("en-IN")}
+            </strong>
+
+            <small>
+              Outstanding amount
+            </small>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      {/* =====================================
+          LOWER GRID
+      ===================================== */}
+
+      <div className="dashboard-lower-grid">
+
+        {/* ATTENDANCE */}
+
+        <div className="dashboard-panel">
+
+          <div className="panel-header">
+
+            <div>
+              <span>
+                ATTENDANCE
+              </span>
+
+              <h2>
+                Today's Overview
+              </h2>
+            </div>
+
+            <div className="panel-icon">
+              <FaClipboardCheck />
+            </div>
+
+          </div>
+
+
+          <div className="attendance-content">
+
+            <div className="attendance-circle">
+
+              <div>
+                <strong>
+                  {present}
+                </strong>
+
+                <span>
+                  Present
+                </span>
+              </div>
+
+            </div>
+
+
+            <div className="attendance-details">
+
+              <div>
+                <span className="attendance-dot present"></span>
+
+                <span>
+                  Present
+                </span>
+
+                <strong>
+                  {present}
+                </strong>
+              </div>
+
+              <div>
+                <span className="attendance-dot absent"></span>
+
+                <span>
+                  Absent
+                </span>
+
+                <strong>
+                  {Math.max(
+                    attendance.length - present,
+                    0
+                  )}
+                </strong>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        {/* STUDENT STATUS */}
+
+        <div className="dashboard-panel">
+
+          <div className="panel-header">
+
+            <div>
+              <span>
+                PAYMENTS
+              </span>
+
+              <h2>
+                Student Status
+              </h2>
+            </div>
+
+            <div className="panel-icon amber-icon">
+              <FaMoneyBillWave />
+            </div>
+
+          </div>
+
+
+          <div className="student-status">
+
+            <div className="status-row">
+
+              <div>
+                <span className="mini-dot paid"></span>
+
+                Paid Students
+              </div>
+
+              <strong>
+                {paidStudents}
+              </strong>
+
+            </div>
+
+
+            <div className="status-row">
+
+              <div>
+                <span className="mini-dot pending"></span>
+
+                Pending Students
+              </div>
+
+              <strong>
+                {Math.max(
+                  students.length - paidStudents,
+                  0
+                )}
+              </strong>
+
+            </div>
+
+
+            <div className="status-progress">
+
+              <div
+                style={{
+                  width:
+                    students.length > 0
+                      ? `${(
+                          (paidStudents /
+                            students.length) *
+                          100
+                        ).toFixed(0)}%`
+                      : "0%",
+                }}
+              ></div>
+
+            </div>
+
+          </div>
+
+
+          <Link
+            to="/students"
+            className="panel-link"
+          >
+            View Students
+
+            <FaArrowRight />
+
+          </Link>
+
+        </div>
+
+      </div>
+
+
+      {/* =====================================
+          QUICK ACTIONS
+      ===================================== */}
+
+      <div className="dashboard-section-title quick-title">
+
+        <div>
+          <span>QUICK ACTIONS</span>
+
+          <h2>
+            Manage JDS
+          </h2>
+        </div>
+
+      </div>
+
+
+      <div className="quick-actions">
+
+        <Link
+          to="/add-student"
+          className="quick-action"
+        >
+          <FaUserGraduate />
+
+          <div>
+            <strong>
+              Add Student
+            </strong>
+
+            <span>
+              Register a new student
+            </span>
+          </div>
+
+          <FaArrowRight />
+        </Link>
+
+
+        <Link
+          to="/vehicles"
+          className="quick-action"
+        >
+          <FaCarSide />
+
+          <div>
+            <strong>
+              Vehicles
+            </strong>
+
+            <span>
+              Manage school vehicles
+            </span>
+          </div>
+
+          <FaArrowRight />
+        </Link>
+
+
+        <Link
+          to="/schedule"
+          className="quick-action"
+        >
+          <FaCalendarAlt />
+
+          <div>
+            <strong>
+              Schedule
+            </strong>
+
+            <span>
+              View driving schedules
+            </span>
+          </div>
+
+          <FaArrowRight />
+        </Link>
+
+      </div>
+
+     </div>
+  </>
   );
 }
-
 export default Dashboard;

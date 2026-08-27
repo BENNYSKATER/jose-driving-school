@@ -5,165 +5,434 @@ import { InstructorContext } from "../context/InstructorContext";
 import { ScheduleContext } from "../context/ScheduleContext";
 import { AttendanceContext } from "../context/AttendanceContext";
 import { exportStudents } from "../utils/exportExcel";
+import "../css/Reports.css";
 
 function Reports() {
-  const { students } = useContext(StudentContext);
-  const { vehicles } = useContext(VehicleContext);
-  const { instructors } = useContext(InstructorContext);
-  const { schedules } = useContext(ScheduleContext);
-  const { attendance } = useContext(AttendanceContext);
+  const { students = [] } = useContext(StudentContext);
+  const { vehicles = [] } = useContext(VehicleContext);
+  const { instructors = [] } = useContext(InstructorContext);
+  const { schedules = [] } = useContext(ScheduleContext);
+
+  // IMPORTANT:
+  // AttendanceContext uses "attendances", not "attendance"
+  const { attendances = [] } = useContext(AttendanceContext);
+
+  /* =========================
+     FEES
+  ========================= */
 
   const paidStudents = students.filter(
-    (s) => s.status === "Paid"
+    (student) =>
+      student.status === "Paid" ||
+      Number(student.balance || 0) === 0
   ).length;
 
-  const pendingStudents = students.length - paidStudents;
+  const pendingStudents =
+    students.length - paidStudents;
 
   const totalFees = students.reduce(
-    (sum, s) => sum + Number(s.fees || 0),
+    (sum, student) =>
+      sum + Number(student.fees || 0),
     0
   );
 
   const collectedFees = students.reduce(
-    (sum, s) => sum + Number(s.paid || 0),
+    (sum, student) =>
+      sum + Number(
+        student.paid ||
+        student.paidAmount ||
+        0
+      ),
     0
   );
 
   const pendingFees = students.reduce(
-    (sum, s) => sum + Number(s.balance || 0),
+    (sum, student) =>
+      sum +
+      Number(
+        student.balance ||
+        Math.max(
+          Number(student.fees || 0) -
+            Number(
+              student.paid ||
+              student.paidAmount ||
+              0
+            ),
+          0
+        )
+      ),
     0
   );
 
-  const present = attendance.filter(
-    (a) => a.status === "Present"
+  /* =========================
+     ATTENDANCE
+  ========================= */
+
+  const present = attendances.filter(
+    (item) => item.status === "Present"
   ).length;
 
-  const absent = attendance.filter(
-    (a) => a.status === "Absent"
+  const absent = attendances.filter(
+    (item) => item.status === "Absent"
   ).length;
+
+  const late = attendances.filter(
+    (item) => item.status === "Late"
+  ).length;
+
+  /* =========================
+     CARDS
+  ========================= */
 
   const cards = [
-    { title: "👨‍🎓 Students", value: students.length, color: "#2563eb" },
-    { title: "🚗 Vehicles", value: vehicles.length, color: "#22c55e" },
-    { title: "👨‍🏫 Instructors", value: instructors.length, color: "#f59e0b" },
-    { title: "📅 Schedules", value: schedules.length, color: "#06b6d4" },
-    { title: "💰 Total Fees", value: `₹${totalFees}`, color: "#8b5cf6" },
-    { title: "💵 Collected", value: `₹${collectedFees}`, color: "#16a34a" },
-    { title: "💸 Pending", value: `₹${pendingFees}`, color: "#ef4444" },
-    { title: "✅ Present", value: present, color: "#22c55e" },
-    { title: "❌ Absent", value: absent, color: "#dc2626" },
-    { title: "💳 Paid Students", value: paidStudents, color: "#0891b2" },
-    { title: "⌛ Pending Students", value: pendingStudents, color: "#ea580c" },
+    {
+      title: "Students",
+      icon: "👨‍🎓",
+      value: students.length,
+      color: "#2563eb",
+    },
+    {
+      title: "Vehicles",
+      icon: "🚗",
+      value: vehicles.length,
+      color: "#22c55e",
+    },
+    {
+      title: "Instructors",
+      icon: "👨‍🏫",
+      value: instructors.length,
+      color: "#f59e0b",
+    },
+    {
+      title: "Schedules",
+      icon: "📅",
+      value: schedules.length,
+      color: "#06b6d4",
+    },
+    {
+      title: "Total Fees",
+      icon: "💰",
+      value: `₹${totalFees.toLocaleString("en-IN")}`,
+      color: "#8b5cf6",
+    },
+    {
+      title: "Collected",
+      icon: "💵",
+      value: `₹${collectedFees.toLocaleString(
+        "en-IN"
+      )}`,
+      color: "#16a34a",
+    },
+    {
+      title: "Pending Fees",
+      icon: "💸",
+      value: `₹${pendingFees.toLocaleString(
+        "en-IN"
+      )}`,
+      color: "#ef4444",
+    },
+    {
+      title: "Present",
+      icon: "✅",
+      value: present,
+      color: "#22c55e",
+    },
+    {
+      title: "Absent",
+      icon: "❌",
+      value: absent,
+      color: "#dc2626",
+    },
+    {
+      title: "Late",
+      icon: "⏰",
+      value: late,
+      color: "#f59e0b",
+    },
+    {
+      title: "Paid Students",
+      icon: "💳",
+      value: paidStudents,
+      color: "#0891b2",
+    },
+    {
+      title: "Pending Students",
+      icon: "⌛",
+      value: pendingStudents,
+      color: "#ea580c",
+    },
   ];
 
-  return (
-    <div
-      style={{
-        padding: "30px",
-        background: "#f4f7fb",
-        minHeight: "100vh",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "30px",
-        }}
-      >
-        <div>
-          <h1
-            style={{
-              margin: 0,
-              color: "#1e3a8a",
-            }}
-          >
-            📊 Reports Dashboard
-          </h1>
+  /* =========================
+     ATTENDANCE %
+  ========================= */
 
-          <p
-            style={{
-              color: "#64748b",
-              marginTop: "5px",
-            }}
-          >
-            Overall Driving School Analytics
+  const totalAttendance =
+    attendances.length;
+
+  const attendancePercentage =
+    totalAttendance > 0
+      ? Math.round(
+          (present / totalAttendance) * 100
+        )
+      : 0;
+
+  return (
+    <div className="reports-page">
+
+      {/* =========================
+          HEADER
+      ========================= */}
+
+      <div className="reports-header">
+
+        <div>
+          <div className="reports-title">
+            📊 Reports
+          </div>
+
+          <p>
+            Overall driving school analytics
           </p>
         </div>
 
         <button
-          onClick={() => exportStudents(students)}
-          style={{
-            background: "#16a34a",
-            color: "#fff",
-            border: "none",
-            padding: "12px 22px",
-            borderRadius: "10px",
-            cursor: "pointer",
-            fontWeight: "bold",
-            fontSize: "15px",
-          }}
+          className="reports-export-btn"
+          onClick={() =>
+            exportStudents(students)
+          }
         >
           📥 Export Excel
         </button>
+
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))",
-          gap: "20px",
-        }}
-      >
+      {/* =========================
+          OVERVIEW CARDS
+      ========================= */}
+
+      <div className="reports-grid">
+
         {cards.map((card, index) => (
           <div
+            className="report-card"
             key={index}
             style={{
-              background: "#fff",
-              borderRadius: "18px",
-              padding: "25px",
-              boxShadow: "0 10px 25px rgba(0,0,0,.08)",
-              borderLeft: `6px solid ${card.color}`,
-              cursor: "pointer",
-              transition: ".3s",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform =
-                "translateY(-8px)";
-              e.currentTarget.style.boxShadow =
-                "0 18px 35px rgba(37,99,235,.20)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform =
-                "translateY(0)";
-              e.currentTarget.style.boxShadow =
-                "0 10px 25px rgba(0,0,0,.08)";
+              "--card-color": card.color,
             }}
           >
-            <h3
-              style={{
-                margin: 0,
-                color: "#374151",
-                fontWeight: "700",
-              }}
-            >
-              {card.title}
-            </h3>
 
-            <h1
+            <div className="report-card-top">
+
+              <div className="report-card-title">
+                <span>
+                  {card.icon}
+                </span>
+
+                <span>
+                  {card.title}
+                </span>
+              </div>
+
+              <div
+                className="report-card-icon"
+                style={{
+                  background: `${card.color}18`,
+                  color: card.color,
+                }}
+              >
+                {card.icon}
+              </div>
+
+            </div>
+
+            <h2
               style={{
-                marginTop: "18px",
                 color: card.color,
-                fontSize: "42px",
-                fontWeight: "800",
               }}
             >
               {card.value}
-            </h1>
+            </h2>
+
           </div>
         ))}
+
       </div>
+
+      {/* =========================
+          LOWER SECTION
+      ========================= */}
+
+      <div className="reports-bottom">
+
+        {/* ATTENDANCE */}
+
+        <div className="reports-panel">
+
+          <div className="reports-panel-header">
+
+            <div>
+              <h2>
+                📋 Attendance Overview
+              </h2>
+
+              <p>
+                Current attendance summary
+              </p>
+            </div>
+
+            <span className="reports-panel-badge">
+              {totalAttendance} Records
+            </span>
+
+          </div>
+
+          <div className="attendance-report-content">
+
+            <div className="attendance-circle">
+
+              <div>
+                <strong>
+                  {attendancePercentage}%
+                </strong>
+
+                <span>
+                  Present
+                </span>
+              </div>
+
+            </div>
+
+            <div className="attendance-report-stats">
+
+              <div>
+                <span className="report-dot present-dot" />
+
+                <span>
+                  Present
+                </span>
+
+                <strong>
+                  {present}
+                </strong>
+              </div>
+
+              <div>
+                <span className="report-dot absent-dot" />
+
+                <span>
+                  Absent
+                </span>
+
+                <strong>
+                  {absent}
+                </strong>
+              </div>
+
+              <div>
+                <span className="report-dot late-dot" />
+
+                <span>
+                  Late
+                </span>
+
+                <strong>
+                  {late}
+                </strong>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        {/* FEES */}
+
+        <div className="reports-panel">
+
+          <div className="reports-panel-header">
+
+            <div>
+              <h2>
+                💰 Fee Overview
+              </h2>
+
+              <p>
+                Student payment summary
+              </p>
+            </div>
+
+          </div>
+
+          <div className="fee-report-list">
+
+            <div className="fee-report-item">
+
+              <div>
+                <span className="fee-icon total">
+                  💰
+                </span>
+
+                <span>
+                  Total Fees
+                </span>
+              </div>
+
+              <strong>
+                ₹{totalFees.toLocaleString(
+                  "en-IN"
+                )}
+              </strong>
+
+            </div>
+
+            <div className="fee-report-item">
+
+              <div>
+                <span className="fee-icon collected">
+                  💵
+                </span>
+
+                <span>
+                  Collected
+                </span>
+              </div>
+
+              <strong className="collected-text">
+                ₹{collectedFees.toLocaleString(
+                  "en-IN"
+                )}
+              </strong>
+
+            </div>
+
+            <div className="fee-report-item">
+
+              <div>
+                <span className="fee-icon pending">
+                  💸
+                </span>
+
+                <span>
+                  Pending
+                </span>
+              </div>
+
+              <strong className="pending-text">
+                ₹{pendingFees.toLocaleString(
+                  "en-IN"
+                )}
+              </strong>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
   );
 }

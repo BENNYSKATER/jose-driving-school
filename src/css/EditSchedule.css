@@ -1,0 +1,272 @@
+.edit-schedule-page {
+  padding: 30px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.edit-schedule-header {
+  margin-bottom: 25px;
+}
+
+.edit-schedule-back {
+  border: none;
+  background: #f1f5f9;
+  color: #475569;
+  padding: 10px 16px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.edit-schedule-back:hover {
+  background: #e2e8f0;
+}
+
+.edit-schedule-title {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.edit-schedule-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 15px;
+  background: #eff6ff;
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+.edit-schedule-title h1 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 28px;
+}
+
+.edit-schedule-title p {
+  margin: 5px 0 0;
+  color: #64748b;
+}
+
+.edit-schedule-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  box-shadow: 0 10px 35px rgba(15, 23, 42, 0.07);
+  overflow: hidden;
+}
+
+.edit-schedule-card-header {
+  padding: 25px 30px;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.edit-schedule-card-header h2 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 20px;
+}
+
+.edit-schedule-card-header p {
+  margin: 6px 0 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.edit-schedule-id {
+  background: #f8fafc;
+  color: #64748b;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.edit-schedule-card form {
+  padding: 30px;
+}
+
+.edit-section {
+  margin-bottom: 30px;
+}
+
+.edit-section h3 {
+  margin: 0 0 17px;
+  font-size: 15px;
+  color: #334155;
+}
+
+.edit-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.edit-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.edit-form-group label {
+  color: #334155;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.edit-form-group label span {
+  color: #ef4444;
+}
+
+.edit-input {
+  position: relative;
+}
+
+.edit-input svg {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+}
+
+.edit-input input,
+.edit-form-group select {
+  width: 100%;
+  height: 48px;
+  box-sizing: border-box;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 14px;
+  outline: none;
+}
+
+.edit-input input {
+  padding: 0 14px 0 42px;
+}
+
+.edit-form-group select {
+  padding: 0 14px;
+}
+
+.edit-input input:focus,
+.edit-form-group select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.edit-schedule-actions {
+  padding-top: 25px;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.edit-cancel-btn,
+.edit-save-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 12px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.edit-cancel-btn {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.edit-save-btn {
+  background: #2563eb;
+  color: white;
+}
+
+.edit-save-btn:hover {
+  background: #1d4ed8;
+}
+
+.edit-schedule-not-found {
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 30px;
+}
+
+.not-found-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 20px;
+  background: #eff6ff;
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  margin-bottom: 18px;
+}
+
+.edit-schedule-not-found h2 {
+  margin: 0;
+  color: #0f172a;
+}
+
+.edit-schedule-not-found p {
+  color: #64748b;
+  margin: 8px 0 20px;
+}
+
+.edit-schedule-not-found button {
+  border: none;
+  background: #2563eb;
+  color: white;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+@media (max-width: 700px) {
+  .edit-schedule-page {
+    padding: 18px;
+  }
+
+  .edit-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .edit-schedule-card form {
+    padding: 20px;
+  }
+
+  .edit-schedule-card-header {
+    padding: 20px;
+  }
+
+  .edit-schedule-card-header {
+    align-items: flex-start;
+    gap: 15px;
+    flex-direction: column;
+  }
+}

@@ -1,5 +1,5 @@
-import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 import {
   FaArrowLeft,
@@ -15,11 +15,14 @@ import { AttendanceContext } from "../context/AttendanceContext";
 
 import "../css/AddAttendance.css";
 
-function AddAttendance() {
+function EditAttendance() {
   const navigate = useNavigate();
+  const { id } = useParams();
 
-  const { addAttendance } =
-    useContext(AttendanceContext);
+  const {
+    attendances = [],
+    updateAttendance,
+  } = useContext(AttendanceContext);
 
   const [formData, setFormData] = useState({
     studentName: "",
@@ -30,8 +33,40 @@ function AddAttendance() {
     status: "Present",
   });
 
+  const [loading, setLoading] = useState(true);
+
   /* =========================================
-     HANDLE INPUT CHANGE
+     FIND ATTENDANCE
+  ========================================= */
+
+  useEffect(() => {
+    const record = attendances.find(
+      (item) =>
+        String(item.id) === String(id)
+    );
+
+    if (record) {
+      setFormData({
+        studentName:
+          record.studentName || "",
+        date: record.date || "",
+        time: record.time || "",
+        instructor:
+          record.instructor || "",
+        vehicle:
+          record.vehicle || "",
+        status:
+          record.status || "Present",
+      });
+
+      setLoading(false);
+    } else {
+      setLoading(false);
+    }
+  }, [attendances, id]);
+
+  /* =========================================
+     HANDLE CHANGE
   ========================================= */
 
   const handleChange = (e) => {
@@ -44,7 +79,7 @@ function AddAttendance() {
   };
 
   /* =========================================
-     SAVE ATTENDANCE
+     UPDATE
   ========================================= */
 
   const handleSubmit = (e) => {
@@ -75,18 +110,104 @@ function AddAttendance() {
       return;
     }
 
-    /*
-      IMPORTANT:
-      ID is generated inside AttendanceContext.
-      So we don't send id from here.
-    */
-
-    addAttendance({
+    updateAttendance(id, {
       ...formData,
     });
 
     navigate("/attendance");
   };
+
+  /* =========================================
+     LOADING
+  ========================================= */
+
+  if (loading) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "#f4f7fb",
+          color: "#64748b",
+          fontSize: "18px",
+          fontWeight: "600",
+        }}
+      >
+        Loading attendance...
+      </div>
+    );
+  }
+
+  /* =========================================
+     NOT FOUND
+  ========================================= */
+
+  const recordExists = attendances.some(
+    (item) =>
+      String(item.id) === String(id)
+  );
+
+  if (!recordExists) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "#f4f7fb",
+          gap: "15px",
+        }}
+      >
+        <div
+          style={{
+            fontSize: "50px",
+          }}
+        >
+          📋
+        </div>
+
+        <h2
+          style={{
+            margin: 0,
+            color: "#0f172a",
+          }}
+        >
+          Attendance Not Found
+        </h2>
+
+        <p
+          style={{
+            margin: 0,
+            color: "#64748b",
+          }}
+        >
+          This attendance record doesn't exist.
+        </p>
+
+        <button
+          type="button"
+          onClick={() =>
+            navigate("/attendance")
+          }
+          style={{
+            border: "none",
+            background: "#2563eb",
+            color: "#ffffff",
+            padding: "12px 20px",
+            borderRadius: "10px",
+            cursor: "pointer",
+            fontWeight: "700",
+          }}
+        >
+          Back to Attendance
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="add-attendance-page">
@@ -115,10 +236,10 @@ function AddAttendance() {
           </div>
 
           <div>
-            <h1>Mark Attendance</h1>
+            <h1>Edit Attendance</h1>
 
             <p>
-              Record student driving practice attendance
+              Update student driving practice attendance
             </p>
           </div>
 
@@ -128,12 +249,10 @@ function AddAttendance() {
 
 
       {/* =========================================
-          MAIN CARD
+          CARD
       ========================================= */}
 
       <div className="add-attendance-card">
-
-        {/* CARD HEADER */}
 
         <div className="add-attendance-card-header">
 
@@ -141,8 +260,7 @@ function AddAttendance() {
             <h2>Attendance Details</h2>
 
             <p>
-              Enter the details for today's
-              driving practice session.
+              Update the attendance information below.
             </p>
           </div>
 
@@ -416,7 +534,7 @@ function AddAttendance() {
 
 
           {/* =========================================
-              ACTION BUTTONS
+              ACTIONS
           ========================================= */}
 
           <div className="add-attendance-actions">
@@ -431,13 +549,12 @@ function AddAttendance() {
               Cancel
             </button>
 
-
             <button
               type="submit"
               className="attendance-save-btn"
             >
               <FaCheck />
-              Save Attendance
+              Update Attendance
             </button>
 
           </div>
@@ -450,4 +567,4 @@ function AddAttendance() {
   );
 }
 
-export default AddAttendance;
+export default EditAttendance;

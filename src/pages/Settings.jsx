@@ -1,183 +1,455 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import {
+  FaCog,
+  FaSchool,
+  FaUserTie,
+  FaPhone,
+  FaEnvelope,
+  FaMapMarkerAlt,
+  FaImage,
+  FaSave,
+  FaDownload,
+  FaUpload,
+} from "react-icons/fa";
+
 import {
   backupData,
   restoreData,
 } from "../utils/backupRestore";
-import { useContext } from "react";
+
 import { SettingsContext } from "../context/SettingsContext";
 
+import "../css/Settings.css";
+
 function Settings() {
-const { settings, setSettings } = useContext(SettingsContext);
+  const { settings, setSettings } =
+    useContext(SettingsContext);
+
+  const [saving, setSaving] = useState(false);
 
   const handleChange = (e) => {
-    setSettings({
-      ...settings,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+
+    setSettings((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
+
   const handleLogo = (e) => {
-  const file = e.target.files[0];
+    const file = e.target.files?.[0];
 
-  if (!file) return;
+    if (!file) return;
 
-  const reader = new FileReader();
+    if (!file.type.startsWith("image/")) {
+      alert("Please select an image file.");
+      return;
+    }
 
-  reader.onload = () => {
-    setSettings({
-      ...settings,
-      logo: reader.result,
-    });
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      setSettings((prev) => ({
+        ...prev,
+        logo: reader.result,
+      }));
+    };
+
+    reader.readAsDataURL(file);
   };
 
-  reader.readAsDataURL(file);
-};
+  const removeLogo = () => {
+    setSettings((prev) => ({
+      ...prev,
+      logo: "",
+    }));
+  };
 
- const saveSettings = () => {
-  localStorage.setItem("settings", JSON.stringify(settings));
-  alert("Settings Saved Successfully ✅");
+  const saveSettings = () => {
+    setSaving(true);
 
-  window.location.reload();
-};
+    localStorage.setItem(
+      "settings",
+      JSON.stringify(settings)
+    );
+
+    setTimeout(() => {
+      setSaving(false);
+      alert("Settings Saved Successfully ✅");
+      window.location.reload();
+    }, 500);
+  };
+
   return (
-    <div style={{ padding: "30px" }}>
-      <h1>⚙️ Settings</h1>
+    <div className="settings-page">
 
-      <div
-        style={{
-          background: "#fff",
-          padding: "25px",
-          borderRadius: "15px",
-          boxShadow: "0 8px 20px rgba(0,0,0,.08)",
-          maxWidth: "600px",
-        }}
-      >
-        <input
-          type="text"
-          name="schoolName"
-          placeholder="Driving School Name"
-          value={settings.schoolName}
-          onChange={handleChange}
-        />
+      {/* =========================
+          HEADER
+      ========================= */}
 
-        <input
-          type="text"
-          name="ownerName"
-          placeholder="Owner Name"
-          value={settings.ownerName}
-          onChange={handleChange}
-        />
+      <div className="settings-header">
 
-        <input
-          type="text"
-          name="phone"
-          placeholder="Phone Number"
-          value={settings.phone}
-          onChange={handleChange}
-        />
+        <div className="settings-heading">
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={settings.email}
-          onChange={handleChange}
-        />
+          <div className="settings-heading-icon">
+            <FaCog />
+          </div>
 
-        <textarea
-          name="address"
-          placeholder="Address"
-          value={settings.address}
-          onChange={handleChange}
-          style={{
-            width: "100%",
-            padding: "12px",
-            borderRadius: "8px",
-            marginBottom: "15px",
-            border: "1px solid #ddd",
-            resize: "none",
-            height: "80px",
-          }}
-        />
-<div style={{ marginBottom: "20px" }}>
-  <label
-    style={{
-      fontWeight: "bold",
-      display: "block",
-      marginBottom: "10px",
-    }}
-  >
-    📷 Driving School Logo
-  </label>
+          <div>
+            <h1>Settings</h1>
 
-  <input
-    type="file"
-    accept="image/*"
-    onChange={handleLogo}
-  />
+            <p>
+              Manage your driving school information
+              and application data
+            </p>
+          </div>
 
-  {settings.logo && (
-    <img
-      src={settings.logo}
-      alt="Logo"
-      style={{
-        width: "120px",
-        marginTop: "15px",
-        borderRadius: "10px",
-        border: "2px solid #ddd",
-      }}
-    />
-  )}
-</div>
+        </div>
+
+      </div>
+
+
+      {/* =========================
+          MAIN GRID
+      ========================= */}
+
+      <div className="settings-grid">
+
+        {/* =========================
+            SCHOOL INFORMATION
+        ========================= */}
+
+        <div className="settings-card">
+
+          <div className="settings-card-header">
+
+            <div className="settings-card-icon blue">
+              <FaSchool />
+            </div>
+
+            <div>
+              <h2>School Information</h2>
+
+              <p>
+                Basic driving school details
+              </p>
+            </div>
+
+          </div>
+
+
+          <div className="settings-form">
+
+            {/* SCHOOL NAME */}
+
+            <div className="settings-field full">
+
+              <label>
+                Driving School Name
+              </label>
+
+              <div className="settings-input">
+
+                <FaSchool />
+
+                <input
+                  type="text"
+                  name="schoolName"
+                  placeholder="Jose Driving School"
+                  value={
+                    settings?.schoolName || ""
+                  }
+                  onChange={handleChange}
+                />
+
+              </div>
+
+            </div>
+
+
+            {/* OWNER */}
+
+            <div className="settings-field">
+
+              <label>
+                Owner Name
+              </label>
+
+              <div className="settings-input">
+
+                <FaUserTie />
+
+                <input
+                  type="text"
+                  name="ownerName"
+                  placeholder="Owner name"
+                  value={
+                    settings?.ownerName || ""
+                  }
+                  onChange={handleChange}
+                />
+
+              </div>
+
+            </div>
+
+
+            {/* PHONE */}
+
+            <div className="settings-field">
+
+              <label>
+                Phone Number
+              </label>
+
+              <div className="settings-input">
+
+                <FaPhone />
+
+                <input
+                  type="text"
+                  name="phone"
+                  placeholder="Phone number"
+                  value={
+                    settings?.phone || ""
+                  }
+                  onChange={handleChange}
+                />
+
+              </div>
+
+            </div>
+
+
+            {/* EMAIL */}
+
+            <div className="settings-field full">
+
+              <label>
+                Email Address
+              </label>
+
+              <div className="settings-input">
+
+                <FaEnvelope />
+
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="school@example.com"
+                  value={
+                    settings?.email || ""
+                  }
+                  onChange={handleChange}
+                />
+
+              </div>
+
+            </div>
+
+
+            {/* ADDRESS */}
+
+            <div className="settings-field full">
+
+              <label>
+                School Address
+              </label>
+
+              <div className="settings-textarea">
+
+                <FaMapMarkerAlt />
+
+                <textarea
+                  name="address"
+                  placeholder="Enter driving school address"
+                  value={
+                    settings?.address || ""
+                  }
+                  onChange={handleChange}
+                />
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        {/* =========================
+            LOGO
+        ========================= */}
+
+        <div className="settings-card logo-card">
+
+          <div className="settings-card-header">
+
+            <div className="settings-card-icon purple">
+              <FaImage />
+            </div>
+
+            <div>
+              <h2>School Logo</h2>
+
+              <p>
+                Upload your driving school logo
+              </p>
+            </div>
+
+          </div>
+
+
+          <div className="logo-upload-area">
+
+            <div className="logo-preview">
+
+              {settings?.logo ? (
+                <img
+                  src={settings.logo}
+                  alt="Driving School Logo"
+                />
+              ) : (
+                <div className="logo-placeholder">
+                  <FaImage />
+                  <span>No Logo</span>
+                </div>
+              )}
+
+            </div>
+
+
+            <label className="logo-upload-btn">
+
+              <FaUpload />
+
+              Choose Logo
+
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleLogo}
+                hidden
+              />
+
+            </label>
+
+
+            {settings?.logo && (
+              <button
+                type="button"
+                className="remove-logo-btn"
+                onClick={removeLogo}
+              >
+                Remove Logo
+              </button>
+            )}
+
+
+            <p className="logo-help">
+              Recommended: PNG or JPG image
+            </p>
+
+          </div>
+
+        </div>
+
+
+        {/* =========================
+            DATA MANAGEMENT
+        ========================= */}
+
+        <div className="settings-card data-card">
+
+          <div className="settings-card-header">
+
+            <div className="settings-card-icon green">
+              <FaDownload />
+            </div>
+
+            <div>
+              <h2>Data Management</h2>
+
+              <p>
+                Backup and restore your JDS data
+              </p>
+            </div>
+
+          </div>
+
+
+          <div className="data-actions">
+
+            <button
+              className="backup-btn"
+              onClick={backupData}
+            >
+              <FaDownload />
+
+              <div>
+                <strong>
+                  Backup Data
+                </strong>
+
+                <span>
+                  Download all application data
+                </span>
+              </div>
+
+            </button>
+
+
+            <label className="restore-btn">
+
+              <FaUpload />
+
+              <div>
+                <strong>
+                  Restore Backup
+                </strong>
+
+                <span>
+                  Import previous JDS data
+                </span>
+              </div>
+
+              <input
+                type="file"
+                hidden
+                accept=".json"
+                onChange={restoreData}
+              />
+
+            </label>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      {/* =========================
+          SAVE
+      ========================= */}
+
+      <div className="settings-save-section">
 
         <button
+          className="settings-save-btn"
           onClick={saveSettings}
-          style={{
-            background: "#2563eb",
-            color: "#fff",
-            padding: "12px 20px",
-            border: "none",
-            borderRadius: "8px",
-            cursor: "pointer",
-          }}
+          disabled={saving}
         >
-          💾 Save Settings
+          <FaSave />
+
+          {saving
+            ? "Saving..."
+            : "Save Settings"}
         </button>
-        <hr style={{ margin: "25px 0" }} />
 
-<button
-  onClick={backupData}
-  style={{
-    background: "#16a34a",
-    color: "#fff",
-    padding: "12px 18px",
-    border: "none",
-    borderRadius: "8px",
-    marginRight: "15px",
-    cursor: "pointer",
-  }}
->
-  💾 Backup Data
-</button>
-
-<label
-  style={{
-    background: "#2563eb",
-    color: "#fff",
-    padding: "12px 18px",
-    borderRadius: "8px",
-    cursor: "pointer",
-  }}
->
-  📂 Restore Backup
-
-  <input
-    type="file"
-    hidden
-    accept=".json"
-    onChange={restoreData}
-  />
-</label>
       </div>
+
     </div>
   );
 }

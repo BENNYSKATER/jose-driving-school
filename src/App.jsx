@@ -5,6 +5,8 @@ import "./App.css";
 
 import { AuthContext } from "./context/AuthContext";
 
+import Layout from "./components/Layout";
+
 // Pages
 import Dashboard from "./pages/Dashboard";
 import Students from "./pages/Students";
@@ -15,8 +17,12 @@ import StudentDetails from "./pages/StudentDetails";
 
 import Vehicles from "./pages/Vehicles";
 import AddVehicle from "./pages/AddVehicle";
+import VehicleDetails from "./pages/VehicleDetails";
+import EditVehicle from "./pages/EditVehicle";
 
 import Fees from "./pages/Fees";
+import EditFee from "./pages/EditFee";
+import AddPayment from "./pages/AddPayment";
 
 import Schedule from "./pages/Schedule";
 import AddSchedule from "./pages/AddSchedule";
@@ -28,23 +34,17 @@ import AddInstructor from "./pages/AddInstructor";
 
 import Attendance from "./pages/Attendance";
 import AddAttendance from "./pages/AddAttendance";
+import EditAttendance from "./pages/EditAttendance";
 
 import Register from "./pages/Register";
-
 import Settings from "./pages/Settings";
 
-import VehicleDetails from "./pages/VehicleDetails";
-import EditVehicle from "./pages/EditVehicle";
-
-import EditFee from "./pages/EditFee";
-import AddPayment from "./pages/AddPayment";
 
 // =====================================================
-// LOGIN PAGE
+// LOGIN
 // =====================================================
 
 function Login() {
-
   const { login } = useContext(AuthContext);
 
   const [username, setUsername] = useState("");
@@ -52,50 +52,32 @@ function Login() {
 
   const navigate = useNavigate();
 
-
   const handleLogin = () => {
-
     const success = login(username, password);
 
     if (success) {
-
       navigate("/dashboard");
-
     } else {
-
       alert("Invalid Username or Password");
-
     }
-
   };
 
-
   return (
-
     <div className="login-page">
 
       <div className="login-card">
-
-        {/* LOGO */}
 
         <div className="login-logo">
           🚗
         </div>
 
-
-        {/* TITLE */}
-
         <h1>
           Jose Driving School
         </h1>
 
-
         <p>
           Management System
         </p>
-
-
-        {/* USERNAME */}
 
         <input
           type="text"
@@ -106,9 +88,6 @@ function Login() {
           }
         />
 
-
-        {/* PASSWORD */}
-
         <input
           type="password"
           placeholder="Password"
@@ -118,9 +97,6 @@ function Login() {
           }
         />
 
-
-        {/* LOGIN BUTTON */}
-
         <button
           className="login-btn"
           onClick={handleLogin}
@@ -128,11 +104,7 @@ function Login() {
           Login
         </button>
 
-
-        {/* REGISTER */}
-
         <p className="register-text">
-
           Don't have an admin account?
 
           <span
@@ -142,15 +114,12 @@ function Login() {
           >
             Create Admin
           </span>
-
         </p>
 
       </div>
 
     </div>
-
   );
-
 }
 
 
@@ -159,195 +128,160 @@ function Login() {
 // =====================================================
 
 function App() {
-
   return (
-
     <Routes>
 
-
-      {/* =================================================
-          LOGIN
-      ================================================= */}
-
+      {/* LOGIN */}
       <Route
         path="/"
         element={<Login />}
       />
 
 
-      {/* =================================================
-          REGISTER
-      ================================================= */}
-
+      {/* REGISTER */}
       <Route
         path="/register"
         element={<Register />}
       />
 
 
-      {/* =================================================
-          DASHBOARD
-      ================================================= */}
+      {/* =========================================
+          ALL MAIN PAGES
+      ========================================= */}
 
-      <Route
-        path="/dashboard"
-        element={<Dashboard />}
-      />
+      <Route element={<Layout />}>
 
-
-      {/* =================================================
-          STUDENTS
-      ================================================= */}
-
-      <Route
-        path="/students"
-        element={<Students />}
-      />
+        {/* DASHBOARD */}
+        <Route
+          path="/dashboard"
+          element={<Dashboard />}
+        />
 
 
-      <Route
-        path="/add-student"
-        element={<AddStudent />}
-      />
+        {/* STUDENTS */}
+        <Route
+          path="/students"
+          element={<Students />}
+        />
+
+        <Route
+          path="/add-student"
+          element={<AddStudent />}
+        />
+
+        <Route
+          path="/edit-student/:id"
+          element={<EditStudent />}
+        />
+
+        <Route
+          path="/student/:id"
+          element={<StudentProfile />}
+        />
+
+        <Route
+          path="/student-details/:id"
+          element={<StudentDetails />}
+        />
 
 
-      <Route
-        path="/edit-student/:id"
-        element={<EditStudent />}
-      />
+        {/* VEHICLES */}
+        <Route
+          path="/vehicles"
+          element={<Vehicles />}
+        />
+
+        <Route
+          path="/add-vehicle"
+          element={<AddVehicle />}
+        />
+
+        <Route
+          path="/vehicle/:id"
+          element={<VehicleDetails />}
+        />
+
+        <Route
+          path="/edit-vehicle/:id"
+          element={<EditVehicle />}
+        />
 
 
-      <Route
-        path="/student/:id"
-        element={<StudentProfile />}
-      />
+        {/* FEES */}
+        <Route
+          path="/fees"
+          element={<Fees />}
+        />
+
+        <Route
+          path="/edit-fee/:id"
+          element={<EditFee />}
+        />
+
+        <Route
+          path="/add-payment/:id"
+          element={<AddPayment />}
+        />
 
 
-      <Route
-        path="/student-details/:id"
-        element={<StudentDetails />}
-      />
+        {/* SCHEDULE */}
+        <Route
+          path="/schedule"
+          element={<Schedule />}
+        />
+
+        <Route
+          path="/add-schedule"
+          element={<AddSchedule />}
+        />
 
 
-      {/* =================================================
-          VEHICLES
-      ================================================= */}
-
-      <Route
-  path="/vehicles"
-  element={<Vehicles />}
-/>
-
-<Route
-  path="/add-vehicle"
-  element={<AddVehicle />}
-/>
-
-<Route
-  path="/vehicle/:id"
-  element={<VehicleDetails />}
-/>
-
-<Route
-  path="/edit-vehicle/:id"
-  element={<EditVehicle />}
-/>
+        {/* REPORTS */}
+        <Route
+          path="/reports"
+          element={<Reports />}
+        />
 
 
-      {/* =================================================
-          FEES
-      ================================================= */}
+        {/* INSTRUCTORS */}
+        <Route
+          path="/instructors"
+          element={<Instructors />}
+        />
 
-      <Route
-        path="/fees"
-        element={<Fees />}
-      />
-
-      <Route
-  path="/edit-fee/:id"
-  element={<EditFee />}
-/>
-
-<Route
-  path="/add-payment/:id"
-  element={<AddPayment />}
-/>
+        <Route
+          path="/add-instructor"
+          element={<AddInstructor />}
+        />
 
 
-      {/* =================================================
-          SCHEDULE
-      ================================================= */}
+        {/* ATTENDANCE */}
+        <Route
+          path="/attendance"
+          element={<Attendance />}
+        />
 
-      <Route
-        path="/schedule"
-        element={<Schedule />}
-      />
+        <Route
+          path="/add-attendance"
+          element={<AddAttendance />}
+        />
 
-
-      <Route
-        path="/add-schedule"
-        element={<AddSchedule />}
-      />
-
-
-      {/* =================================================
-          REPORTS
-      ================================================= */}
-
-      <Route
-        path="/reports"
-        element={<Reports />}
-      />
+        <Route
+          path="/edit-attendance/:id"
+          element={<EditAttendance />}
+        />
 
 
-      {/* =================================================
-          INSTRUCTORS
-      ================================================= */}
+        {/* SETTINGS */}
+        <Route
+          path="/settings"
+          element={<Settings />}
+        />
 
-      <Route
-        path="/instructors"
-        element={<Instructors />}
-      />
-
-
-      <Route
-        path="/add-instructor"
-        element={<AddInstructor />}
-      />
-
-
-      {/* =================================================
-          ATTENDANCE
-      ================================================= */}
-
-      <Route
-        path="/attendance"
-        element={<Attendance />}
-      />
-
-
-      <Route
-        path="/add-attendance"
-        element={<AddAttendance />}
-      />
-
-
-      {/* =================================================
-          SETTINGS
-      ================================================= */}
-
-      <Route
-        path="/settings"
-        element={<Settings />}
-      />
-
-
+      </Route>
 
     </Routes>
-
   );
-
 }
-
 
 export default App;

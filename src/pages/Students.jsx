@@ -1,8 +1,10 @@
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+
 import { StudentContext } from "../context/StudentContext";
-import "../css/Students.css";
 import { generateReceipt } from "../utils/generateReceipt";
+
+import "../css/Students.css";
 
 function Students() {
   const {
@@ -11,129 +13,143 @@ function Students() {
     updateStudent,
   } = useContext(StudentContext);
 
-  const [search, setSearch] = useState("");
-
   const navigate = useNavigate();
 
-  // =========================
+  const [search, setSearch] = useState("");
+
+  // =========================================
   // SEARCH
-  // =========================
+  // =========================================
+
   const filteredStudents = students.filter((student) => {
-    const searchText = search.toLowerCase().trim();
+    const searchValue = search.toLowerCase().trim();
 
     return (
-      student.name
-        ?.toLowerCase()
-        .includes(searchText) ||
-      String(student.mobile || "").includes(searchText)
+      student.name?.toLowerCase().includes(searchValue) ||
+      student.mobile?.toLowerCase().includes(searchValue) ||
+      student.vehicle?.toLowerCase().includes(searchValue)
     );
   });
 
-  // =========================
+  // =========================================
   // DELETE
-  // =========================
-  const handleDelete = (student) => {
+  // =========================================
+
+  const handleDelete = (index) => {
     const confirmDelete = window.confirm(
-      `Delete ${student.name}?`
+      "Are you sure you want to delete this student?"
     );
 
     if (!confirmDelete) return;
 
-    deleteStudent(student.id);
+    deleteStudent(index);
   };
 
-  // =========================
-  // MARK PAID
-  // =========================
+  // =========================================
+  // MARK PAYMENT AS PAID
+  // =========================================
+
   const handleMarkPaid = (student) => {
     const totalFees = Number(student.fees || 0);
 
-    updateStudent(student.id, {
+    const updatedStudent = {
+      ...student,
       paid: totalFees,
       balance: 0,
       status: "Paid",
-    });
-  };
+    };
 
-  // =========================
-  // ADD CLASS
-  // =========================
-  const handleAddClass = (student) => {
-    updateStudent(student.id, {
-      practiceClasses:
-        Number(student.practiceClasses || 0) + 1,
-    });
-  };
-
-  // =========================
-  // PAYMENT
-  // =========================
-  const handlePayment = (student) => {
-    const amount = Number(
-      window.prompt(
-        `Enter payment amount for ${student.name}`
-      )
-    );
-
-    if (!amount || amount <= 0) return;
-
-    const totalFees = Number(student.fees || 0);
-    const currentPaid = Number(student.paid || 0);
-    const currentBalance = totalFees - currentPaid;
-
-    if (amount > currentBalance) {
-      alert(
-        `Payment cannot be greater than balance ₹${currentBalance}`
+    if (updateStudent) {
+      updateStudent(
+        student.id,
+        updatedStudent
       );
-      return;
-    }
 
-    const newPaid = currentPaid + amount;
-    const newBalance = totalFees - newPaid;
+      alert("Payment marked as Paid ✅");
+    } else {
+      alert(
+        "updateStudent function is not available in StudentContext."
+      );
+    }
+  };
+
+  // =========================================
+  // RECEIPT
+  // =========================================
+
+  const handleReceipt = (student) => {
+    try {
+      generateReceipt(
+        student,
+        Number(student.paid || 0)
+      );
+    } catch (error) {
+      console.error(error);
+      alert("Unable to generate receipt.");
+    }
+  };
+
+  // =========================================
+  // VIEW STUDENT
+  // =========================================
+
+  const handleView = (student, index) => {
+    navigate(
+      `/student/${student.id ?? index}`
+    );
+  };
+
+  // =========================================
+  // EDIT STUDENT
+  // =========================================
+
+  const handleEdit = (student, index) => {
+    navigate(
+      `/edit-student/${student.id ?? index}`
+    );
+  };
+
+  // =========================================
+  // ADD CLASS
+  // =========================================
+
+  const handleClass = (student) => {
+    const completed =
+      Number(student.classesCompleted || 0) + 1;
 
     const updatedStudent = {
       ...student,
-
-      paid: newPaid,
-
-      balance: newBalance,
-
-      status:
-        newBalance <= 0
-          ? "Paid"
-          : "Pending",
-
-      paymentHistory: [
-        ...(student.paymentHistory || []),
-        {
-          amount: amount,
-          date: new Date().toLocaleDateString(),
-        },
-      ],
+      classesCompleted: completed,
     };
 
-    updateStudent(
-      student.id,
-      updatedStudent
-    );
+    if (updateStudent) {
+      updateStudent(
+        student.id,
+        updatedStudent
+      );
 
-    generateReceipt(
-      updatedStudent,
-      amount
-    );
+      alert(
+        `Class ${completed} completed ✅`
+      );
+    }
   };
 
-  // =========================
-  // OPEN PROFILE
-  // =========================
-  const openProfile = (student) => {
-    navigate(`/student/${student.id}`);
+  // =========================================
+  // ADD PAYMENT
+  // =========================================
+
+  const handlePayment = (student, index) => {
+    navigate(
+      `/add-payment/${student.id ?? index}`
+    );
   };
 
   return (
     <div className="students-page">
 
-      {/* ================= HEADER ================= */}
+      {/* =========================================
+          HEADER
+      ========================================= */}
 
       <div className="students-header">
 
@@ -147,7 +163,7 @@ function Students() {
             <h1>Students</h1>
 
             <p>
-              Manage all driving school students
+              Manage driving school students
             </p>
           </div>
 
@@ -164,7 +180,9 @@ function Students() {
       </div>
 
 
-      {/* ================= SEARCH ================= */}
+      {/* =========================================
+          SEARCH
+      ========================================= */}
 
       <div className="student-search-section">
 
@@ -176,7 +194,7 @@ function Students() {
 
           <input
             type="text"
-            placeholder="Search by name or mobile number..."
+            placeholder="Search students..."
             value={search}
             onChange={(e) =>
               setSearch(e.target.value)
@@ -185,11 +203,12 @@ function Students() {
 
           {search && (
             <button
-              type="button"
               className="clear-search"
-              onClick={() => setSearch("")}
+              onClick={() =>
+                setSearch("")
+              }
             >
-              ✕
+              ×
             </button>
           )}
 
@@ -198,30 +217,32 @@ function Students() {
       </div>
 
 
-      {/* ================= RESULT INFO ================= */}
+      {/* =========================================
+          RESULT INFO
+      ========================================= */}
 
       <div className="students-result-info">
 
-        <span>
+        <div>
           Total Students:
           <strong>
             {students.length}
           </strong>
-        </span>
+        </div>
 
-        {search && (
-          <span>
-            Showing:
-            <strong>
-              {filteredStudents.length}
-            </strong>
-          </span>
-        )}
+        <div>
+          Showing:
+          <strong>
+            {filteredStudents.length}
+          </strong>
+        </div>
 
       </div>
 
 
-      {/* ================= TABLE ================= */}
+      {/* =========================================
+          TABLE
+      ========================================= */}
 
       <div className="students-table-card">
 
@@ -232,15 +253,43 @@ function Students() {
             <thead>
 
               <tr>
-                <th>Student</th>
-                <th>Mobile</th>
-                <th>Vehicle</th>
-                <th>Total Fees</th>
-                <th>Paid</th>
-                <th>Balance</th>
-                <th>Status</th>
-                <th>Classes</th>
-                <th>Actions</th>
+
+                <th>
+                  Student
+                </th>
+
+                <th>
+                  Mobile
+                </th>
+
+                <th>
+                  Vehicle
+                </th>
+
+                <th>
+                  Fees
+                </th>
+
+                <th>
+                  Paid
+                </th>
+
+                <th>
+                  Balance
+                </th>
+
+                <th>
+                  Status
+                </th>
+
+                <th>
+                  Classes
+                </th>
+
+                <th>
+                  Actions
+                </th>
+
               </tr>
 
             </thead>
@@ -264,13 +313,12 @@ function Students() {
                       </div>
 
                       <h3>
-                        No students found
+                        No Students Found
                       </h3>
 
                       <p>
-                        {search
-                          ? "Try another search"
-                          : "Add your first student"}
+                        Add a student or
+                        change your search.
                       </p>
 
                     </div>
@@ -282,7 +330,7 @@ function Students() {
               ) : (
 
                 filteredStudents.map(
-                  (student) => {
+                  (student, index) => {
 
                     const balance =
                       Number(
@@ -294,97 +342,120 @@ function Students() {
                         student.paid || 0
                       );
 
+                    const fees =
+                      Number(
+                        student.fees || 0
+                      );
+
                     return (
 
                       <tr
-                        key={student.id}
+                        key={
+                          student.id ?? index
+                        }
                       >
 
-                        {/* ================= STUDENT ================= */}
+                        {/* STUDENT */}
 
                         <td>
 
                           <button
-                            type="button"
                             className="student-name"
                             onClick={() =>
-                              openProfile(student)
+                              handleView(
+                                student,
+                                index
+                              )
                             }
                           >
 
-                            <span className="student-avatar">
+                            <div className="student-avatar">
 
                               {student.photo ? (
 
                                 <img
-                                  src={student.photo}
-                                  alt={student.name}
+                                  src={
+                                    student.photo
+                                  }
+                                  alt={
+                                    student.name
+                                  }
                                 />
 
                               ) : (
-
                                 "👤"
-
                               )}
 
-                            </span>
+                            </div>
 
 
-                            <span className="student-info">
+                            <div className="student-info">
 
                               <strong>
-                                {student.name}
+                                {
+                                  student.name ||
+                                  "Unnamed Student"
+                                }
                               </strong>
 
                               <small>
-                                {student.licenseType ||
-                                  "License not set"}
+                                ID:{" "}
+                                {
+                                  student.id ??
+                                  index + 1
+                                }
                               </small>
 
-                            </span>
+                            </div>
 
                           </button>
 
                         </td>
 
 
-                        {/* ================= MOBILE ================= */}
+                        {/* MOBILE */}
 
                         <td>
 
                           <span className="mobile-number">
-                            📱 {student.mobile}
+                            {
+                              student.mobile ||
+                              "-"
+                            }
                           </span>
 
                         </td>
 
 
-                        {/* ================= VEHICLE ================= */}
+                        {/* VEHICLE */}
 
                         <td>
 
                           <span className="vehicle-badge">
-                            🚗 {student.vehicle}
+
+                            🚗{" "}
+                            {
+                              student.vehicle ||
+                              "-"
+                            }
+
                           </span>
 
                         </td>
 
 
-                        {/* ================= FEES ================= */}
+                        {/* FEES */}
 
                         <td>
 
-                          <strong className="fee-value">
-                            ₹
-                            {Number(
-                              student.fees || 0
-                            )}
-                          </strong>
+                          <span className="fee-value">
+                            ₹{fees}
+                          </span>
 
                         </td>
 
 
-                        {/* ================= PAID ================= */}
+                        {/* PAID */}
 
                         <td>
 
@@ -395,7 +466,7 @@ function Students() {
                         </td>
 
 
-                        {/* ================= BALANCE ================= */}
+                        {/* BALANCE */}
 
                         <td>
 
@@ -412,13 +483,14 @@ function Students() {
                         </td>
 
 
-                        {/* ================= STATUS ================= */}
+                        {/* STATUS */}
 
                         <td>
 
                           <span
                             className={
-                              student.status === "Paid"
+                              student.status ===
+                              "Paid"
                                 ? "status paid"
                                 : "status pending"
                             }
@@ -428,27 +500,31 @@ function Students() {
                               ●
                             </span>
 
-                            {student.status ||
-                              "Pending"}
+                            {
+                              student.status ||
+                              "Pending"
+                            }
 
                           </span>
 
                         </td>
 
 
-                        {/* ================= CLASSES ================= */}
+                        {/* CLASSES */}
 
                         <td>
 
                           <span className="classes-count">
-                            {student.practiceClasses ||
-                              0}
+                            {
+                              student.classesCompleted ||
+                              0
+                            }
                           </span>
 
                         </td>
 
 
-                        {/* ================= ACTIONS ================= */}
+                        {/* ACTIONS */}
 
                         <td>
 
@@ -457,28 +533,30 @@ function Students() {
                             {/* VIEW */}
 
                             <button
-                              type="button"
                               className="action view"
+                              title="View Student"
                               onClick={() =>
-                                openProfile(student)
+                                handleView(
+                                  student,
+                                  index
+                                )
                               }
-                              title="View Profile"
                             >
-                              👁️
+                              👁
                             </button>
 
 
                             {/* EDIT */}
 
                             <button
-                              type="button"
                               className="action edit"
+                              title="Edit Student"
                               onClick={() =>
-                                navigate(
-                                  `/edit-student/${student.id}`
+                                handleEdit(
+                                  student,
+                                  index
                                 )
                               }
-                              title="Edit Student"
                             >
                               ✏️
                             </button>
@@ -487,15 +565,36 @@ function Students() {
                             {/* DELETE */}
 
                             <button
-                              type="button"
                               className="action delete"
-                              onClick={() =>
-                                handleDelete(student)
-                              }
                               title="Delete Student"
+                              onClick={() =>
+                                handleDelete(
+                                  index
+                                )
+                              }
                             >
-                              🗑️
+                              🗑
                             </button>
+
+
+                            {/* PAYMENT */}
+
+                            {balance > 0 && (
+
+                              <button
+                                className="action pay"
+                                title="Add Payment"
+                                onClick={() =>
+                                  handlePayment(
+                                    student,
+                                    index
+                                  )
+                                }
+                              >
+                                💰
+                              </button>
+
+                            )}
 
 
                             {/* MARK PAID */}
@@ -504,12 +603,13 @@ function Students() {
                               "Paid" && (
 
                               <button
-                                type="button"
                                 className="action mark-paid"
+                                title="Mark Paid"
                                 onClick={() =>
-                                  handleMarkPaid(student)
+                                  handleMarkPaid(
+                                    student
+                                  )
                                 }
-                                title="Mark Fully Paid"
                               >
                                 ✓
                               </button>
@@ -520,33 +620,31 @@ function Students() {
                             {/* ADD CLASS */}
 
                             <button
-                              type="button"
                               className="action class-btn"
+                              title="Complete Class"
                               onClick={() =>
-                                handleAddClass(student)
+                                handleClass(
+                                  student
+                                )
                               }
-                              title="Add Practice Class"
                             >
-                              +1
+                              🚗
                             </button>
 
 
-                            {/* PAYMENT */}
+                            {/* RECEIPT */}
 
-                            {balance > 0 && (
-
-                              <button
-                                type="button"
-                                className="action pay"
-                                onClick={() =>
-                                  handlePayment(student)
-                                }
-                                title="Make Payment"
-                              >
-                                ₹
-                              </button>
-
-                            )}
+                            <button
+                              className="action receipt"
+                              title="Generate Receipt"
+                              onClick={() =>
+                                handleReceipt(
+                                  student
+                                )
+                              }
+                            >
+                              🧾
+                            </button>
 
                           </div>
 

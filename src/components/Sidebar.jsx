@@ -1,74 +1,158 @@
-import { Link, useLocation } from "react-router-dom";
-import {
-  FaTachometerAlt,
-  FaUserGraduate,
-  FaUserTie,
-  FaCarSide,
-  FaMoneyBillWave,
-  FaCalendarAlt,
-  FaClipboardList,
-  FaChartBar,
-  FaCog,
-  FaPlusCircle,
-  FaShieldAlt,
-} from "react-icons/fa";
-
-import logo from "../assets/logo.png";
+import { NavLink } from "react-router-dom";
 import "../css/Sidebar.css";
 
 function Sidebar() {
-  const location = useLocation();
-
-  const menus = [
-    { name: "Dashboard", path: "/dashboard", icon: <FaTachometerAlt /> },
-    { name: "Students", path: "/students", icon: <FaUserGraduate /> },
-    { name: "Add Student", path: "/add-student", icon: <FaPlusCircle /> },
-    { name: "Instructors", path: "/instructors", icon: <FaUserTie /> },
-    { name: "Vehicles", path: "/vehicles", icon: <FaCarSide /> },
-    { name: "Add Vehicle", path: "/add-vehicle", icon: <FaPlusCircle /> },
-    { name: "Fees", path: "/fees", icon: <FaMoneyBillWave /> },
-    { name: "Schedule", path: "/schedule", icon: <FaCalendarAlt /> },
-    { name: "Attendance", path: "/attendance", icon: <FaClipboardList /> },
-    { name: "Reports", path: "/reports", icon: <FaChartBar /> },
-    { name: "Settings", path: "/settings", icon: <FaCog /> },
+  const menuItems = [
+    {
+      title: "Dashboard",
+      icon: "⌂",
+      path: "/dashboard",
+    },
+    {
+      title: "Students",
+      icon: "👨‍🎓",
+      path: "/students",
+    },
+    {
+      title: "Instructors",
+      icon: "👨‍🏫",
+      path: "/instructors",
+    },
+    {
+      title: "Vehicles",
+      icon: "🚗",
+      path: "/vehicles",
+    },
+    {
+      title: "Fees",
+      icon: "💰",
+      path: "/fees",
+    },
+    {
+      title: "Schedule",
+      icon: "📅",
+      path: "/schedule",
+    },
+    {
+      title: "Attendance",
+      icon: "✓",
+      path: "/attendance",
+    },
+    {
+      title: "Reports",
+      icon: "📊",
+      path: "/reports",
+    },
   ];
 
   return (
-    <div className="sidebar">
+    <aside className="jds-sidebar">
 
-      <div className="sidebar-logo">
-        <img src={logo} alt="JDS Logo" />
-        <h2>JDS</h2>
-        <span>Jose Driving School</span>
+      {/* =====================================
+          LOGO
+      ===================================== */}
+
+      <div className="sidebar-brand">
+
+        <div className="sidebar-logo">
+          🚗
+        </div>
+
+        <div className="sidebar-brand-text">
+          <h2>JDS</h2>
+          <span>Driving School</span>
+        </div>
+
       </div>
 
-      <ul className="sidebar-menu">
-        {menus.map((menu) => (
-          <li
-            key={menu.path}
-            className={
-              location.pathname === menu.path ? "active" : ""
+
+      {/* =====================================
+          MENU
+      ===================================== */}
+
+      <nav className="sidebar-menu">
+
+        <div className="sidebar-section-title">
+          MAIN MENU
+        </div>
+
+        {menuItems.map((item) => (
+
+          <NavLink
+            key={item.path}
+            to={item.path}
+            className={({ isActive }) =>
+              isActive
+                ? "sidebar-link active"
+                : "sidebar-link"
             }
           >
-            <Link to={menu.path}>
-              {menu.icon}
-              <span>{menu.name}</span>
-            </Link>
-          </li>
-        ))}
-      </ul>
 
-      <div className="sidebar-footer">
-        <FaShieldAlt className="shield" />
-        <h4>Drive Safe</h4>
-        <p>
-          Safety is our priority.
-          <br />
-          Drive safe and stay safe.
-        </p>
+            <span className="sidebar-link-icon">
+              {item.icon}
+            </span>
+
+            <span className="sidebar-link-text">
+              {item.title}
+            </span>
+
+          </NavLink>
+
+        ))}
+
+
+        <div className="sidebar-section-title settings-title">
+          SYSTEM
+        </div>
+
+
+        {/* SETTINGS */}
+
+        <NavLink
+          to="/settings"
+          className={({ isActive }) =>
+            isActive
+              ? "sidebar-link active"
+              : "sidebar-link"
+          }
+        >
+
+          <span className="sidebar-link-icon">
+            ⚙️
+          </span>
+
+          <span className="sidebar-link-text">
+            Settings
+          </span>
+
+        </NavLink>
+
+      </nav>
+
+
+      {/* =====================================
+          BOTTOM CARD
+      ===================================== */}
+
+      <div className="sidebar-bottom-card">
+
+        <div className="sidebar-bottom-icon">
+          🚘
+        </div>
+
+        <div>
+          <strong>
+            Jose Driving School
+          </strong>
+
+          <span>
+            Management System
+          </span>
+        </div>
+
       </div>
 
-    </div>
+    </aside>
   );
 }
 
