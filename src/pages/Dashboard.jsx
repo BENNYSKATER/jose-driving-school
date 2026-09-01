@@ -1,510 +1,400 @@
-import { useContext } from "react";
+import React from "react";
 import {
-  FaUserGraduate,
-  FaCarSide,
+  FaGraduationCap,
+  FaCar,
   FaUserTie,
+  FaCalendarDays,
   FaMoneyBillWave,
-  FaCalendarAlt,
-  FaClipboardCheck,
-  FaArrowUp,
+  FaArrowTrendUp,
   FaArrowRight,
-} from "react-icons/fa";
-
-import { Link } from "react-router-dom";
-
-import { StudentContext } from "../context/StudentContext";
-import { VehicleContext } from "../context/VehicleContext";
-import { InstructorContext } from "../context/InstructorContext";
-import { ScheduleContext } from "../context/ScheduleContext";
-import { AttendanceContext } from "../context/AttendanceContext";
-
+  FaClock,
+  FaCheck,
+  FaUserCheck,
+  FaUserXmark,
+  FaPlus,
+  FaChartPie,
+} from "react-icons/fa6";
 import "../css/Dashboard.css";
-import Sidebar from "../components/Sidebar";
 
-function Dashboard() {
-  const { students = [] } = useContext(StudentContext);
-  const { vehicles = [] } = useContext(VehicleContext);
-  const { instructors = [] } = useContext(InstructorContext);
-  const { schedules = [] } = useContext(ScheduleContext);
-  const { attendance = [] } = useContext(AttendanceContext);
-
-  const totalFees = students.reduce(
-    (sum, student) =>
-      sum + Number(student.fees || 0),
-    0
-  );
-
-  const collectedFees = students.reduce(
-    (sum, student) =>
-      sum + Number(student.paid || 0),
-    0
-  );
-
-  const pendingFees = students.reduce(
-    (sum, student) =>
-      sum + Number(student.balance || 0),
-    0
-  );
-
-  const present = attendance.filter(
-    (item) => item.status === "Present"
-  ).length;
-
-  const paidStudents = students.filter(
-    (student) => student.status === "Paid"
-  ).length;
-
-  const stats = [
-    {
-      title: "Total Students",
-      value: students.length,
-      icon: <FaUserGraduate />,
-      className: "cyan",
-      link: "/students",
-    },
-    {
-      title: "Vehicles",
-      value: vehicles.length,
-      icon: <FaCarSide />,
-      className: "amber",
-      link: "/vehicles",
-    },
-    {
-      title: "Instructors",
-      value: instructors.length,
-      icon: <FaUserTie />,
-      className: "green",
-      link: "/instructors",
-    },
-    {
-      title: "Schedules",
-      value: schedules.length,
-      icon: <FaCalendarAlt />,
-      className: "coral",
-      link: "/schedule",
-    },
-  ];
-
+const Dashboard = () => {
   return (
-  <>
-    <Sidebar />
+    <div className="jds-dashboard">
 
-    <div className="dashboard-page">
-
-      {/* =====================================
-          HEADER
-      ===================================== */}
-
+      {/* Header */}
       <div className="dashboard-header">
-
         <div>
-          <span className="dashboard-small-title">
-            JOSE DRIVING SCHOOL
-          </span>
-
-          <h1>
-            Dashboard
-          </h1>
-
-          <p>
-            Welcome back. Here's what's happening
-            with your driving school.
-          </p>
+          <span className="school-label">JOSE DRIVING SCHOOL</span>
+          <h1>Dashboard</h1>
+          <p>Good afternoon 👋 Here's what's happening with your driving school.</p>
         </div>
 
-        <div className="dashboard-status">
-          <span className="status-dot"></span>
+        <div className="header-actions">
+          <button className="add-btn">
+            <FaPlus /> Add Student
+          </button>
 
-          System Online
+          <div className="system-status">
+            <span></span>
+            System Online
+          </div>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className="stats-grid">
+
+        <div className="stat-card blue">
+          <div className="stat-top">
+            <div className="stat-icon">
+              <FaGraduationCap />
+            </div>
+            <FaArrowRight className="arrow" />
+          </div>
+
+          <h2>24</h2>
+          <p>Total Students</p>
+
+          <div className="stat-bottom">
+            <FaArrowTrendUp />
+            <span>12% this month</span>
+          </div>
+        </div>
+
+        <div className="stat-card orange">
+          <div className="stat-top">
+            <div className="stat-icon">
+              <FaCar />
+            </div>
+            <FaArrowRight className="arrow" />
+          </div>
+
+          <h2>6</h2>
+          <p>Vehicles</p>
+
+          <div className="stat-bottom">
+            <FaArrowTrendUp />
+            <span>2 active today</span>
+          </div>
+        </div>
+
+        <div className="stat-card green">
+          <div className="stat-top">
+            <div className="stat-icon">
+              <FaUserTie />
+            </div>
+            <FaArrowRight className="arrow" />
+          </div>
+
+          <h2>8</h2>
+          <p>Instructors</p>
+
+          <div className="stat-bottom">
+            <FaArrowTrendUp />
+            <span>All available</span>
+          </div>
+        </div>
+
+        <div className="stat-card pink">
+          <div className="stat-top">
+            <div className="stat-icon">
+              <FaCalendarDays />
+            </div>
+            <FaArrowRight className="arrow" />
+          </div>
+
+          <h2>12</h2>
+          <p>Today's Sessions</p>
+
+          <div className="stat-bottom">
+            <FaClock />
+            <span>4 upcoming</span>
+          </div>
         </div>
 
       </div>
 
-
-      {/* =====================================
-          STAT CARDS
-      ===================================== */}
-
-      <div className="dashboard-stats">
-
-        {stats.map((stat) => (
-          <Link
-            to={stat.link}
-            className={`dashboard-stat-card ${stat.className}`}
-            key={stat.title}
-          >
-
-            <div className="stat-top">
-
-              <div className="stat-icon">
-                {stat.icon}
-              </div>
-
-              <FaArrowRight className="stat-arrow" />
-
-            </div>
-
-            <div className="stat-value">
-              {stat.value}
-            </div>
-
-            <div className="stat-title">
-              {stat.title}
-            </div>
-
-            <div className="stat-bottom">
-              <FaArrowUp />
-              Active records
-            </div>
-
-          </Link>
-        ))}
-
-      </div>
-
-
-      {/* =====================================
-          FINANCE SECTION
-      ===================================== */}
-
-      <div className="dashboard-section-title">
+      {/* Financial Overview */}
+      <div className="section-title">
         <div>
           <span>FINANCIAL OVERVIEW</span>
           <h2>Fee Summary</h2>
         </div>
       </div>
 
+      <div className="fee-grid">
 
-      <div className="finance-grid">
-
-        {/* TOTAL */}
-
-        <div className="finance-card cyan">
-
-          <div className="finance-icon">
+        <div className="fee-card">
+          <div className="fee-icon blue-icon">
             <FaMoneyBillWave />
           </div>
-
-          <div className="finance-info">
-            <span>Total Fees</span>
-
-            <strong>
-              ₹{totalFees.toLocaleString("en-IN")}
-            </strong>
-
-            <small>
-              Overall student fees
-            </small>
+          <div>
+            <small>Total Fees</small>
+            <h3>₹1,25,000</h3>
+            <p>Overall student fees</p>
           </div>
-
         </div>
 
-
-        {/* COLLECTED */}
-
-        <div className="finance-card green">
-
-          <div className="finance-icon">
+        <div className="fee-card">
+          <div className="fee-icon green-icon">
             <FaMoneyBillWave />
           </div>
-
-          <div className="finance-info">
-            <span>Collected</span>
-
-            <strong>
-              ₹{collectedFees.toLocaleString("en-IN")}
-            </strong>
-
-            <small>
-              Payments received
-            </small>
+          <div>
+            <small>Collected</small>
+            <h3>₹98,000</h3>
+            <p>Payments received</p>
           </div>
-
         </div>
 
-
-        {/* PENDING */}
-
-        <div className="finance-card coral">
-
-          <div className="finance-icon">
+        <div className="fee-card">
+          <div className="fee-icon pink-icon">
             <FaMoneyBillWave />
           </div>
-
-          <div className="finance-info">
-            <span>Pending</span>
-
-            <strong>
-              ₹{pendingFees.toLocaleString("en-IN")}
-            </strong>
-
-            <small>
-              Outstanding amount
-            </small>
+          <div>
+            <small>Pending</small>
+            <h3>₹27,000</h3>
+            <p>Outstanding amount</p>
           </div>
-
         </div>
 
       </div>
 
+      {/* Main Grid */}
+      <div className="main-grid">
 
-      {/* =====================================
-          LOWER GRID
-      ===================================== */}
-
-      <div className="dashboard-lower-grid">
-
-        {/* ATTENDANCE */}
-
+        {/* Attendance */}
         <div className="dashboard-panel">
-
           <div className="panel-header">
-
             <div>
-              <span>
-                ATTENDANCE
-              </span>
-
-              <h2>
-                Today's Overview
-              </h2>
+              <span>ATTENDANCE</span>
+              <h2>Today's Overview</h2>
             </div>
 
             <div className="panel-icon">
-              <FaClipboardCheck />
+              <FaUserCheck />
             </div>
-
           </div>
-
 
           <div className="attendance-content">
 
             <div className="attendance-circle">
-
               <div>
-                <strong>
-                  {present}
-                </strong>
-
-                <span>
-                  Present
-                </span>
+                <strong>87%</strong>
+                <small>Present</small>
               </div>
-
             </div>
-
 
             <div className="attendance-details">
 
-              <div>
-                <span className="attendance-dot present"></span>
-
-                <span>
+              <div className="attendance-item">
+                <div className="attendance-name">
+                  <span className="dot present"></span>
                   Present
-                </span>
-
-                <strong>
-                  {present}
-                </strong>
+                </div>
+                <strong>21</strong>
               </div>
 
-              <div>
-                <span className="attendance-dot absent"></span>
-
-                <span>
+              <div className="attendance-item">
+                <div className="attendance-name">
+                  <span className="dot absent"></span>
                   Absent
-                </span>
+                </div>
+                <strong>3</strong>
+              </div>
 
-                <strong>
-                  {Math.max(
-                    attendance.length - present,
-                    0
-                  )}
-                </strong>
+              <div className="attendance-item">
+                <div className="attendance-name">
+                  <span className="dot pending"></span>
+                  Not Marked
+                </div>
+                <strong>0</strong>
               </div>
 
             </div>
-
           </div>
-
         </div>
 
-
-        {/* STUDENT STATUS */}
-
+        {/* Student Status */}
         <div className="dashboard-panel">
-
           <div className="panel-header">
-
             <div>
-              <span>
-                PAYMENTS
-              </span>
-
-              <h2>
-                Student Status
-              </h2>
+              <span>PAYMENTS</span>
+              <h2>Student Status</h2>
             </div>
 
-            <div className="panel-icon amber-icon">
+            <div className="panel-icon orange-panel">
               <FaMoneyBillWave />
             </div>
-
           </div>
-
 
           <div className="student-status">
 
             <div className="status-row">
-
               <div>
-                <span className="mini-dot paid"></span>
-
+                <span className="status-dot paid"></span>
                 Paid Students
               </div>
-
-              <strong>
-                {paidStudents}
-              </strong>
-
+              <strong>18</strong>
             </div>
-
 
             <div className="status-row">
-
               <div>
-                <span className="mini-dot pending"></span>
-
+                <span className="status-dot pending-status"></span>
                 Pending Students
               </div>
-
-              <strong>
-                {Math.max(
-                  students.length - paidStudents,
-                  0
-                )}
-              </strong>
-
+              <strong>6</strong>
             </div>
 
-
-            <div className="status-progress">
-
-              <div
-                style={{
-                  width:
-                    students.length > 0
-                      ? `${(
-                          (paidStudents /
-                            students.length) *
-                          100
-                        ).toFixed(0)}%`
-                      : "0%",
-                }}
-              ></div>
-
+            <div className="status-row">
+              <div>
+                <span className="status-dot overdue"></span>
+                Overdue
+              </div>
+              <strong>2</strong>
             </div>
 
           </div>
 
+          <div className="collection-bar">
+            <div className="collection-info">
+              <span>Fee Collection</span>
+              <strong>78%</strong>
+            </div>
 
-          <Link
-            to="/students"
-            className="panel-link"
-          >
-            View Students
-
-            <FaArrowRight />
-
-          </Link>
-
+            <div className="progress">
+              <div></div>
+            </div>
+          </div>
         </div>
 
       </div>
 
+      {/* Today's Schedule */}
+      <div className="schedule-panel">
 
-      {/* =====================================
-          QUICK ACTIONS
-      ===================================== */}
+        <div className="panel-header">
+          <div>
+            <span>TODAY</span>
+            <h2>Driving Schedule</h2>
+          </div>
 
-      <div className="dashboard-section-title quick-title">
-
-        <div>
-          <span>QUICK ACTIONS</span>
-
-          <h2>
-            Manage JDS
-          </h2>
+          <button className="view-btn">
+            View All <FaArrowRight />
+          </button>
         </div>
 
+        <div className="schedule-list">
+
+          <div className="schedule-row">
+            <div className="time">
+              <strong>09:00</strong>
+              <span>AM</span>
+            </div>
+
+            <div className="schedule-student">
+              <div className="avatar">BM</div>
+              <div>
+                <strong>Benny Mon</strong>
+                <span>Driving Practice</span>
+              </div>
+            </div>
+
+            <div className="vehicle">
+              <FaCar />
+              BMW
+            </div>
+
+            <div className="schedule-status completed">
+              <FaCheck /> Completed
+            </div>
+          </div>
+
+          <div className="schedule-row">
+            <div className="time">
+              <strong>11:30</strong>
+              <span>AM</span>
+            </div>
+
+            <div className="schedule-student">
+              <div className="avatar">JD</div>
+              <div>
+                <strong>John David</strong>
+                <span>Driving Practice</span>
+              </div>
+            </div>
+
+            <div className="vehicle">
+              <FaCar />
+              Swift
+            </div>
+
+            <div className="schedule-status upcoming">
+              <FaClock /> Upcoming
+            </div>
+          </div>
+
+          <div className="schedule-row">
+            <div className="time">
+              <strong>02:30</strong>
+              <span>PM</span>
+            </div>
+
+            <div className="schedule-student">
+              <div className="avatar">AS</div>
+              <div>
+                <strong>Arun Kumar</strong>
+                <span>Driving Practice</span>
+              </div>
+            </div>
+
+            <div className="vehicle">
+              <FaCar />
+              Baleno
+            </div>
+
+            <div className="schedule-status upcoming">
+              <FaClock /> Upcoming
+            </div>
+          </div>
+
+        </div>
       </div>
 
-
+      {/* Quick Actions */}
       <div className="quick-actions">
 
-        <Link
-          to="/add-student"
-          className="quick-action"
-        >
-          <FaUserGraduate />
+        <div className="quick-title">
+          <span>QUICK ACTIONS</span>
+          <h2>Manage JDS</h2>
+        </div>
 
-          <div>
-            <strong>
-              Add Student
-            </strong>
-
-            <span>
-              Register a new student
-            </span>
-          </div>
-
+        <button>
+          <FaGraduationCap />
+          <span>Add Student</span>
           <FaArrowRight />
-        </Link>
+        </button>
 
-
-        <Link
-          to="/vehicles"
-          className="quick-action"
-        >
-          <FaCarSide />
-
-          <div>
-            <strong>
-              Vehicles
-            </strong>
-
-            <span>
-              Manage school vehicles
-            </span>
-          </div>
-
+        <button>
+          <FaMoneyBillWave />
+          <span>Record Payment</span>
           <FaArrowRight />
-        </Link>
+        </button>
 
-
-        <Link
-          to="/schedule"
-          className="quick-action"
-        >
-          <FaCalendarAlt />
-
-          <div>
-            <strong>
-              Schedule
-            </strong>
-
-            <span>
-              View driving schedules
-            </span>
-          </div>
-
+        <button>
+          <FaCalendarDays />
+          <span>Add Schedule</span>
           <FaArrowRight />
-        </Link>
+        </button>
+
+        <button>
+          <FaChartPie />
+          <span>View Reports</span>
+          <FaArrowRight />
+        </button>
 
       </div>
 
-     </div>
-  </>
+    </div>
   );
-}
+};
+
 export default Dashboard;
